@@ -1,0 +1,16 @@
+library Common {
+	//! import "Include/Common/Basic.j"
+	//! import "Include/Common/Math.j"
+	//! import "Include/Common/StringUtil.j"
+	//! import "Include/Common/Convert.j"
+	//! import "Include/Common/Node.j"
+	//! import "Include/Common/List.j"
+	//! import "Include/Common/Tree.j"
+	//! import "Include/Common/Table.j"
+	//! import "Include/Common/Argb.j"
+	//! import "Include/Common/Vector2.j"
+	//! import "Include/Common/Vector3.j"
+	//! import "Include/Common/Line2.j"
+	//! import "Include/Common/Line3.j"
+	//! import "Include/Common/Polygon.j"
+}
