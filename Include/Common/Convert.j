@@ -6,6 +6,7 @@ private  {
 	function s2I (string s)->integer {return S2I(s);}
 	function s2R (string s)->real {return S2R(s);}
 }
+
 public struct Convert {
 	// Valid chars: 32~126 (Total 95) 128 €
 	// !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
