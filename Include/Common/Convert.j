@@ -4,7 +4,7 @@ private  {
 	function r2I (real r)->integer {return R2I(r);}
 	function r2S (real r)->string {return R2S(r);}
 	function s2I (string s)->integer {return S2I(s);}
-	function s2R (string s)->real {return S2R(s);}
+    function s2R (string s)->real {return S2R(s);}
 }
 
 public struct Convert {
