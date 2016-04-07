@@ -4,7 +4,7 @@ private  {
 	function r2I (real r)->integer {return R2I(r);}
 	function r2S (real r)->string {return R2S(r);}
 	function s2I (string s)->integer {return S2I(s);}
-    function s2R (string s)->real {return S2R(s);}
+	function s2R (string s)->real {return S2R(s);}
 }
 
 public struct Convert {
@@ -12,8 +12,8 @@ public struct Convert {
 	// !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
 	//
 	// Valid escaped character: \\  \"  \b  \t  \n  \f  \r
-    private static constant string charSet= " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
-    private static constant string charSet64= "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+/";
+	private static constant string charSet= " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+	private static constant string charSet64= "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+/";
 
 	static method S2Id (string s)->integer {
 		string charSet= Convert.charSet;
