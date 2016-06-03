@@ -14,7 +14,7 @@ public struct Bool {
 	}
 	static method operator [] (boolean value)->Bool {return Bool.create(value);}
 
-  method ToString () {
+  method ToString ()->string {
     if (this == 1) {
       return "true";
     }
