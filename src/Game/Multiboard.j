@@ -3,7 +3,7 @@ public struct Multiboard {
 	static method create ()->thistype {
 		Multiboard this= Multiboard.allocate();
 		this.h= CreateMultiboard();
-		Game.SaveInt(this.HashCode, this);
+		Game.PutInteger(this.HashCode, this);
 		return this;
 	}
 	method destroy () {

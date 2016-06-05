@@ -4,7 +4,7 @@ struct Game {
 	static constant real Version= 1.00;
 	static boolexpr True= null;
 	static boolexpr False= null;
-	static delegate Table Table= 0;
+	static delegate RootTable Table= 0;
     private static Timer gameTimer= 0;
     private static boolean active= true;
 	private static boolean isLocal= false;
@@ -27,10 +27,10 @@ struct Game {
 	}
 	static method TimedEffect (effect h, real duration)->Timer {
 		integer id= GetHandleId(h);
-		Game.SaveEffect(id, h);
+		Game.PutEffect(id, h);
 		return Timer.New(duration, id, function (integer id) {
-			Timer t= Game.LoadInt(GetHandleId(GetExpiredTimer()));
-			DestroyEffect(Game.LoadEffect(id));
+			Timer t= Game.GetInteger(GetHandleId(GetExpiredTimer()));
+			DestroyEffect(Game.GetEffect(id));
 			Game.FlushHandle(id);
 			t.Data= t;
 		});

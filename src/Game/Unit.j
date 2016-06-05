@@ -11,12 +11,12 @@ public struct Unit extends IWidget {
 	private static method bind (unit u)->Unit {
 		integer id= GetHandleId(u);
 		Unit this;
-		if (Game.ExistsInt(id))
-			return Game.LoadInt(id);
+		if (Game.ExistsInteger(id))
+			return Game.GetInteger(id);
 		this= Point.create();
 		this.Point= this;
 		this.h= u;
-		Game.SaveInt(id, this);
+		Game.PutInteger(id, this);
 		return this;
 	}
 	// implement Widget
@@ -90,7 +90,7 @@ public struct Unit extends IWidget {
 
 	// About Damage
 	method DamageTarget (IWidget target, real damage, string damageType)->boolean {
-		return UnitDamageTarget(this.h, Game.LoadWidget(target), damage, damageType== "Attack",
+		return UnitDamageTarget(this.h, Game.GetWidget(target), damage, damageType== "Attack",
 			false, ATTACK_TYPE_MELEE, Unit.getDamageType(damageType), WEAPON_TYPE_WHOKNOWS);
 	}
 	private static method getDamageType (string damageType)->damagetype {
@@ -143,7 +143,7 @@ public struct Unit extends IWidget {
 		return IssuePointOrderById(this.h, orderId, pos.X, pos.Y);
 	}
 	method OrderTarget (integer orderId, IWidget target)->boolean {
-		return IssueTargetOrderById(this.h, orderId, Game.LoadWidget(target));}
+		return IssueTargetOrderById(this.h, orderId, Game.GetWidget(target));}
 	method OrderBuild (integer unitId, Point pos)->boolean {
 		return IssueBuildOrderById(this.h, unitId, pos.X, pos.Y);
 	}
@@ -176,7 +176,7 @@ public struct Unit extends IWidget {
 		Event.LeaveRegion.Add(function (Unit u) {
 			if (Event.Region== Region.WorldRegion) {
 				Group.WorldGroup.Remove(u);
-				Game.FlushInt(u.HashCode);
+				Game.FlushInteger(u.HashCode);
 				u.h= null;
 				u.Point.destroy();
 			}

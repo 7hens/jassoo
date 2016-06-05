@@ -34,29 +34,29 @@ public struct Event [event_MaxCount] {
     static method operator Player ()->GamePlayer {return GetPlayerId(GetTriggerPlayer());}
 	static method operator ChatString ()->string {return GetEventPlayerChatString();}
 	static method operator SpellSkill ()->integer {return GetSpellAbilityId();}
-	static method operator Region ()->Region {return Game.LoadInt(GetHandleId(GetTriggeringRegion()));}
+	static method operator Region ()->Region {return Game.GetInteger(GetHandleId(GetTriggeringRegion()));}
 
-	static method operator Rescuer ()->Unit {return Game.LoadInt(GetHandleId(GetRescuer()));}
-	static method operator Summoner ()->Unit {return Game.LoadInt(GetHandleId(GetSummoningUnit()));}
-	static method operator Attacker ()->Unit {return Game.LoadInt(GetHandleId(GetAttacker()));}
-	static method operator TransportUnit ()->Unit {return Game.LoadInt(GetHandleId(GetKillingUnit()));}
-	static method operator Seller ()->Unit {return Game.LoadInt(GetHandleId(GetSellingUnit()));}
-	static method operator OrderTarget ()->Unit {return Game.LoadInt(GetHandleId(GetOrderTarget()));}
-	static method operator Reviver ()->Unit {return Game.LoadInt(GetHandleId(GetRevivingUnit()));}
-	static method operator Damager ()->Unit {return Game.LoadInt(GetHandleId(GetEventDamageSource()));}
+	static method operator Rescuer ()->Unit {return Game.GetInteger(GetHandleId(GetRescuer()));}
+	static method operator Summoner ()->Unit {return Game.GetInteger(GetHandleId(GetSummoningUnit()));}
+	static method operator Attacker ()->Unit {return Game.GetInteger(GetHandleId(GetAttacker()));}
+	static method operator TransportUnit ()->Unit {return Game.GetInteger(GetHandleId(GetKillingUnit()));}
+	static method operator Seller ()->Unit {return Game.GetInteger(GetHandleId(GetSellingUnit()));}
+	static method operator OrderTarget ()->Unit {return Game.GetInteger(GetHandleId(GetOrderTarget()));}
+	static method operator Reviver ()->Unit {return Game.GetInteger(GetHandleId(GetRevivingUnit()));}
+	static method operator Damager ()->Unit {return Game.GetInteger(GetHandleId(GetEventDamageSource()));}
 	static method operator DamageValue ()->real {return GetEventDamage();}
 
     static method operator SpellTarget ()->IWidget {
         integer id= GetHandleId(GetSpellTargetDestructable());
-        if (id!= 0) return Game.LoadInt(id);
+        if (id!= 0) return Game.GetInteger(id);
         id= GetHandleId(GetSpellTargetItem());
-        if (id!= 0) return Game.LoadInt(id);
-        return Game.LoadInt(GetHandleId(GetSpellTargetUnit()));
+        if (id!= 0) return Game.GetInteger(id);
+        return Game.GetInteger(GetHandleId(GetSpellTargetUnit()));
     }
     static method operator SoldTarget ()->IWidget {
     	integer id= GetHandleId(GetSoldItem());
-        if (id!= 0) return Game.LoadInt(id);
-        return Game.LoadInt(GetHandleId(GetSoldUnit()));
+        if (id!= 0) return Game.GetInteger(id);
+        return Game.GetInteger(GetHandleId(GetSoldUnit()));
     }
 
 	//! textmacro Wrapper_Event_TriggerPosition takes event, position, coord
@@ -90,12 +90,12 @@ public struct Event [event_MaxCount] {
             this.h= CreateTrigger();
             this.Actions= List.create();
             this.registered= false;
-            Game.SaveTrigger(GetHandleId(this.h), this.h);
-            Game.SaveInt(GetHandleId(this.h), this);
+            Game.PutTrigger(GetHandleId(this.h), this.h);
+            Game.PutInteger(GetHandleId(this.h), this);
             DisableTrigger(this.h);
             TriggerAddCondition(this.h, Condition(function ()->boolean {
-				Event this= Game.LoadInt(GetHandleId(GetTriggeringTrigger()));
-				this.Actions.Evaluate(Game.LoadInt(GetHandleId(GetTriggerUnit())));
+				Event this= Game.GetInteger(GetHandleId(GetTriggeringTrigger()));
+				this.Actions.Evaluate(Game.GetInteger(GetHandleId(GetTriggerUnit())));
 				return false;
             }));
         }

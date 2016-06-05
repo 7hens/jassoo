@@ -3,14 +3,14 @@ public struct TextTag {
 	static method create (string text, Vector3 pos)->TextTag {
 		TextTag this= TextTag.allocate();
 		this.h= CreateTextTag();
-		Game.SaveInt(this.HashCode, this);
+		Game.PutInteger(this.HashCode, this);
 		SetTextTagPermanent(this.h, true);
 		SetTextTagText(this.h, text, pos.Z);
 		SetTextTagPos(this.h, pos.X, pos.Y, pos.Z);
 		return this;
 	}
 	method destroy () {
-		Game.FlushInt(this.HashCode);
+		Game.FlushInteger(this.HashCode);
 		DestroyTextTag(this.h);
 		this.h= null;
 		this.deallocate();

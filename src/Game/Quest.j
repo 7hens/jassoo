@@ -3,11 +3,11 @@ public struct Quest {
 	static method create ()->thistype {
 		Quest this= Quest.allocate();
 		this.h= CreateQuest();
-		Game.SaveInt(this.HashCode, this);
+		Game.PutInteger(this.HashCode, this);
 		return this;
 	}
 	method destroy () {
-		Game.FlushInt(this.HashCode);
+		Game.FlushInteger(this.HashCode);
 		DestroyQuest(this.h);
 		this.h= null;
 		this.deallocate();

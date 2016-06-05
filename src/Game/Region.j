@@ -9,13 +9,13 @@ public struct Region {
     	Region this= List.create();
     	this.List= this;
     	this.h= CreateRegion();
-    	Game.SaveInt(this.HashCode, this);
+    	Game.PutInteger(this.HashCode, this);
         TriggerRegisterEnterRegion(Event.EnterRegion.Handle, this.h, Game.True);
         TriggerRegisterLeaveRegion(Event.LeaveRegion.Handle, this.h, Game.True);
         return this;
     }
     method destroy () {
-	    Game.FlushInt(this.HashCode);
+	    Game.FlushInteger(this.HashCode);
 	    this.List.Traverse(function (integer data) {
 	    	Region.disposedRectList.Add(data);
 	    });
@@ -31,10 +31,10 @@ public struct Region {
 		if (Region.disposedRectList.Empty) {
 			rec= Rect(min.X, min.Y, max.X, max.Y);
 			id= GetHandleId(rec);
-			Game.SaveRect(id, rec);
+			Game.PutRect(id, rec);
 		} else {
 			id= Region.disposedRectList.Pop();
-			rec= Game.LoadRect(id);
+			rec= Game.GetRect(id);
 			SetRect(rec, min.X, min.Y, max.X, max.Y);
 		}
         this.List.Add(id);
@@ -50,14 +50,14 @@ public struct Region {
         else if (fogType==2)
         	fogState= FOG_OF_WAR_VISIBLE;
     	for (i= this.First; i!= 0; i= i.Next)
-    		SetFogStateRect(Player(plr), fogState, Game.LoadRect(i.Data), shareVision);
+    		SetFogStateRect(Player(plr), fogState, Game.GetRect(i.Data), shareVision);
         fogState= null;
     }
 
     method SetWeather (integer weatherType) {
     	Node i;
     	for (i= this.First; i!= 0; i= i.Next)
-            AddWeatherEffect(Game.LoadRect(i.Data), weatherType);
+            AddWeatherEffect(Game.GetRect(i.Data), weatherType);
     }
 
 	private static method onInit () {
@@ -65,6 +65,6 @@ public struct Region {
 		Region.WorldRegion= Region.create();
 		Region.WorldRect= GetWorldBounds();
 		RegionAddRect(Region.WorldRegion.h, Region.WorldRect);
-		Game.SaveRect(GetHandleId(Region.WorldRect), Region.WorldRect);
+		Game.PutRect(GetHandleId(Region.WorldRect), Region.WorldRect);
     }
 }

@@ -7,11 +7,11 @@ public struct Destruct extends IWidget {
 		Destruct this= pos.GetCopy();
 		this.Point= this;
         this.h= CreateDestructableZ(typeId, pos.X, pos.Y, pos.Z, face, scale, variation);
-        Game.SaveInt(this.HashCode, this);
+        Game.PutInteger(this.HashCode, this);
         return this;
     }
     method destroy () {
-	    Game.FlushInt(this.HashCode);
+	    Game.FlushInteger(this.HashCode);
         RemoveDestructable(this.h);
         this.h= null;
         this.Point.destroy();

@@ -1,5 +1,6 @@
 library Common {
 	//! import "src/Common/Basic.j"
+	//! import "src/Common/Log.j"
 	//! import "src/Common/Math.j"
 	//! import "src/Common/StringUtil.j"
 	//! import "src/Common/Convert.j"
@@ -14,7 +15,9 @@ library Collections requires Common {
 	//! import "src/Collections/Node.j"
 	//! import "src/Collections/List.j"
 	//! import "src/Collections/Tree.j"
-	//! import "src/Collections/Table.j"
+	//! import "src/Collections/HashTable.j"
+	//! import "src/Collections/RootTable.j"
+	//! import "src/Collections/_Table.j"
 }
 
 library Wrapper requires Common {

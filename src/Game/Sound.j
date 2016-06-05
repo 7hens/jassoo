@@ -4,12 +4,12 @@ public struct Sound {
 		integer fadeInV, integer fadeOutV, string eaxSetting)->thistype {
 		Sound this= Sound.allocate();
 		this.h= CreateSound(path, looping, is3D, stopWhenOut, fadeInV, fadeOutV, eaxSetting);
-		Game.SaveInt(this.HashCode, this);
+		Game.PutInteger(this.HashCode, this);
 		KillSoundWhenDone(this.h);
 		return this;
 	}
 	method destroy () {
-		Game.FlushInt(this.HashCode);
+		Game.FlushInteger(this.HashCode);
 		StopSound(this.h, true, false);
 		this.h= null;
 		this.deallocate();
