@@ -4,18 +4,18 @@ public struct Image {
 		Image this= Image.allocate();
 		this.h= CreateImage(path, size.X, size.Y, size.Z, pos.X, pos.Y, pos.Z, 0.0, 0.0, 0.0, imageType);
 		SetImageRenderAlways(this.h, true );
-		Game.PutInteger(this.HashCode, this);
+		Game.PutInteger(this.HandleId, this);
 		return this;
 	}
 	method destroy () {
-		Game.FlushInteger(this.HashCode);
+		Game.FlushInteger(this.HandleId);
 		DestroyImage(this.h);
 		this.h= null;
 		this.deallocate();
 	}
 
 	method operator Handle ()->image {return this.h;}
-	method operator HashCode ()->integer {return GetHandleId(this.h);}
+	method operator HandleId ()->integer {return GetHandleId(this.h);}
 	method Show (boolean flag) {ShowImage(this.h, flag);}
 	method SetColor (Argb color) {SetImageColor(this.h, color.R, color.G, color.B, color.A);}
 	method SetType (integer imageType) {SetImageType(this.h, imageType);}

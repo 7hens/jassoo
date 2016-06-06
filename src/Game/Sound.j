@@ -4,19 +4,19 @@ public struct Sound {
 		integer fadeInV, integer fadeOutV, string eaxSetting)->thistype {
 		Sound this= Sound.allocate();
 		this.h= CreateSound(path, looping, is3D, stopWhenOut, fadeInV, fadeOutV, eaxSetting);
-		Game.PutInteger(this.HashCode, this);
+		Game.PutInteger(this.HandleId, this);
 		KillSoundWhenDone(this.h);
 		return this;
 	}
 	method destroy () {
-		Game.FlushInteger(this.HashCode);
+		Game.FlushInteger(this.HandleId);
 		StopSound(this.h, true, false);
 		this.h= null;
 		this.deallocate();
 	}
 
 	method operator Handle ()->sound {return this.h;}
-	method operator HashCode ()->integer {return GetHandleId(this.h);}
+	method operator HandleId ()->integer {return GetHandleId(this.h);}
 	method operator Duration ()->integer {return GetSoundDuration(this.h);}
 	method operator Duration= (integer duration) {SetSoundDuration(this.h, duration);}
 	method SetVolumn (integer volume) {SetSoundVolume(this.h, volume);}

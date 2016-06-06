@@ -9,13 +9,13 @@ public struct Region {
     	Region this= List.create();
     	this.List= this;
     	this.h= CreateRegion();
-    	Game.PutInteger(this.HashCode, this);
+    	Game.PutInteger(this.HandleId, this);
         TriggerRegisterEnterRegion(Event.EnterRegion.Handle, this.h, Game.True);
         TriggerRegisterLeaveRegion(Event.LeaveRegion.Handle, this.h, Game.True);
         return this;
     }
     method destroy () {
-	    Game.FlushInteger(this.HashCode);
+	    Game.FlushInteger(this.HandleId);
 	    this.List.Traverse(function (integer data) {
 	    	Region.disposedRectList.Add(data);
 	    });
@@ -24,7 +24,7 @@ public struct Region {
     }
 
 	method operator Handle ()->region {return this.h;}
-	method operator HashCode ()->integer {return GetHandleId(this.h);}
+	method operator HandleId ()->integer {return GetHandleId(this.h);}
     method AddRect (Point min, Point max) {
 		rect rec= null;
 		integer id= 0;

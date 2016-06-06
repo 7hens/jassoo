@@ -20,12 +20,6 @@ library Collections requires Common {
 	//! import "src/Collections/_Table.j"
 }
 
-library Wrapper requires Common {
-	//! import "src/Wrapper/Bool.j"
-	//! import "src/Wrapper/Real.j"
-	//! import "src/Wrapper/String.j"
-}
-
 library Game requires Collections {
 	//! import "src/Game/Console.j"
 	//! import "src/Game/Timer.j"
@@ -49,7 +43,7 @@ library Game requires Collections {
 	//! import "src/Game/Unit.j"
 }
 
-library Test requires Wrapper {
+library Test requires Game {
 	//! import "src/Test/Test.j"
 	//! import "src/Test/Zinc.j"
 }

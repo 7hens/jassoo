@@ -1,5 +1,5 @@
 public interface IWidget {
-	method operator HashCode ()->integer= 0;
+	method operator HandleId ()->integer= 0;
     method operator TypeId ()->integer= 0;
     method operator Visible ()->boolean= false;
     method operator Visible= (boolean visible)= null;
@@ -38,7 +38,7 @@ public interface IWidget {
     method AddEffect (string path, string attachPoint, real duration)->Timer= 0;
 }
 private module widgetModule {
-	method operator HashCode ()->integer {return GetHandleId(this.h);}
+	method operator HandleId ()->integer {return GetHandleId(this.h);}
     method operator X ()->real {return GetWidgetX(this.h);}
     method operator Y ()->real {return GetWidgetY(this.h);}
     method operator Z ()->real {return this.FlyHeight+ this.TerrainZ;}

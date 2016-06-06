@@ -3,17 +3,17 @@ public struct Quest {
 	static method create ()->thistype {
 		Quest this= Quest.allocate();
 		this.h= CreateQuest();
-		Game.PutInteger(this.HashCode, this);
+		Game.PutInteger(this.HandleId, this);
 		return this;
 	}
 	method destroy () {
-		Game.FlushInteger(this.HashCode);
+		Game.FlushInteger(this.HandleId);
 		DestroyQuest(this.h);
 		this.h= null;
 		this.deallocate();
 	}
 	method operator Handle ()->quest {return this.h;}
-	method operator HashCode ()->integer {return GetHandleId(this.h);}
+	method operator HandleId ()->integer {return GetHandleId(this.h);}
 	method operator IconPath= (string path) {QuestSetIconPath(this.h, path);}
 	method operator Title= (string title) {QuestSetTitle(this.h, title);}
 	method operator Text= (string text) {QuestSetDescription(this.h, text);}

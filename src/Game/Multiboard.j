@@ -3,11 +3,11 @@ public struct Multiboard {
 	static method create ()->thistype {
 		Multiboard this= Multiboard.allocate();
 		this.h= CreateMultiboard();
-		Game.PutInteger(this.HashCode, this);
+		Game.PutInteger(this.HandleId, this);
 		return this;
 	}
 	method destroy () {
-		Game.FlushAll(this.HashCode);
+		Game.FlushAll(this.HandleId);
 		DestroyMultiboard(this.h);
 		this.h= null;
 		this.deallocate();
@@ -15,7 +15,7 @@ public struct Multiboard {
     method Clear () {MultiboardClear(this.h);}
 
 	method operator Handle ()->multiboard {return this.h;}
-	method operator HashCode ()->integer {return GetHandleId(this.h);}
+	method operator HandleId ()->integer {return GetHandleId(this.h);}
     method operator Title ()->string {return MultiboardGetTitleText(this.h);}
 	method operator Title= (string title) {MultiboardSetTitleText(this.h, title);}
 	method operator Visible ()->boolean {return IsMultiboardDisplayed(this.h);}

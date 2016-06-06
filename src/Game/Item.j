@@ -8,11 +8,11 @@ public struct Item extends IWidget  {
 		Item this= pos.GetCopy();
 		this.Point =Point;
 		this.h= CreateItem(typeId, pos.X, pos.Y);
-		Game.PutInteger(this.HashCode, this);
+		Game.PutInteger(this.HandleId, this);
 		return this;
 	}
 	method destroy () {
-		Game.FlushInteger(this.HashCode);
+		Game.FlushInteger(this.HandleId);
 		RemoveItem(this.h);
 		this.h= null;
 		this.Point.destroy();

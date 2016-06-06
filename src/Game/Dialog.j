@@ -5,18 +5,18 @@ public struct Dialog {
 	static method create ()->Dialog {
 		Dialog this= Dialog.allocate();
 		this.h= DialogCreate();
-		Game.PutInteger(this.HashCode, this);
+		Game.PutInteger(this.HandleId, this);
 		return this;
 	}
 	method destroy () {
-		Game.FlushInteger(this.HashCode);
+		Game.FlushInteger(this.HandleId);
 		DialogDestroy(this.h);
 		this.h= null;
 		this.deallocate();
 	}
 
 	method operator Handle ()->dialog {return this.h;}
-	method operator HashCode ()->integer {return GetHandleId(this.h);}
+	method operator HandleId ()->integer {return GetHandleId(this.h);}
 
 	method Clear () {DialogClear(this.h);}
 	method SetText (string text) {DialogSetMessage(this.h, text);}

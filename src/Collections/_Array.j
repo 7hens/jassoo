@@ -1,8 +1,10 @@
-public struct Array {
-	//! runtextmacro Array_Common("", "thistype")
+//! textmacro _Array takes name, valueType
+public struct $name$Array extends ICollection {
+	private $name$Table table;
+	private integer size;
 	
-	method Sort (Comparer comparer) {
-		this.quickSort(0, this.size - 1, comparer);
+	method Sort () {
+		this.quickSort(0, this.size - 1);
 	}
 	
 	private method quickSort (integer low, integer high, Comparer comparer) {
@@ -11,37 +13,37 @@ public struct Array {
 		}
 		integer first = low;
 		integer last = high;
-		integer key = this.table[first];
+		real key = this.table[first];
 		while (first < last) {
-			while (first < last && comparer.evaluate(this.table[last], key) >= 0 ) {
+			while (first < last && this.table[last] >= key) {
 				last -= 1;
 			}
 			this.table[first] = this.table[last];
 
-			while (first < last && comparer.evaluate(this.table[first], key) <= 0) {
+			while (first < last && this.table[first] <= key) {
 				first += 1;
 			}
 			this.table[last] = this.table[first];
 		}
 		this.table[first] = key;
-		this.quickSort(low, first - 1, comparer);
-		this.quickSort(first + 1, high, comparer);
+		this.quickSort(low, first - 1);
+		this.quickSort(first + 1, high);
 	}
 }
 
-public struct ArrayEnumerator extends IEnumerator {
-	private Table table;
+private struct arrayEnumerator extends IEnumerator {
+	private $name$Table table;
 	private integer size;
 	private integer position;
 	
-	method operator Current ()->integer {
+	method operator Current ()->$dataType$ {
 		if (this.position < 0) {
 			return 0;
 		}
 		return this.table[this.position];
 	}
 	
-	static method create (Table table, integer size) {
+	static method create ($name$Table table, integer size) {
 		thistype this = thistype.allocate();
 		this.table = table;
 		this.size = size;
@@ -62,4 +64,8 @@ public struct ArrayEnumerator extends IEnumerator {
 		this.position = -1;
 	}
 }
-	
+//! endtextmacro
+//! runtextmarco _Array("", 		"thistype")
+//! runtextmarco _Array("Boolean",	"boolean")
+//! runtextmarco _Array("Real",		"real")
+//! runtextmarco _Array("String", 	"string")

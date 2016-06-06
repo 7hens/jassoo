@@ -176,7 +176,7 @@ public struct Unit extends IWidget {
 		Event.LeaveRegion.Add(function (Unit u) {
 			if (Event.Region== Region.WorldRegion) {
 				Group.WorldGroup.Remove(u);
-				Game.FlushInteger(u.HashCode);
+				Game.FlushInteger(u.HandleId);
 				u.h= null;
 				u.Point.destroy();
 			}

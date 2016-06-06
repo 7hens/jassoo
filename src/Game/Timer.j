@@ -13,7 +13,7 @@ public struct Timer {
 	static method create (real timeout, integer data, Action action)->Timer {
 		Timer this= Timer.allocate();
 		this.h= CreateTimer();
-		Game.PutInteger(this.HashCode, this);
+		Game.PutInteger(this.HandleId, this);
 		this.Actions= List.create();
 		this.timerDialog= CreateTimerDialog(this.h);
 		TimerDialogSetTitle(this.timerDialog, "");
@@ -21,7 +21,7 @@ public struct Timer {
         return this.Reset(timeout, data, action);
 	}
 	method destroy () {
-		Game.FlushInteger(this.HashCode);
+		Game.FlushInteger(this.HandleId);
 		DestroyTimer(this.h);
 		DestroyTimerDialog(this.timerDialog);
 		this.Actions.destroy();
@@ -69,7 +69,7 @@ public struct Timer {
 
     //  Timer
     method operator Handle ()->timer {return this.h;}
-    method operator HashCode ()->integer {return GetHandleId(this.h);}
+    method operator HandleId ()->integer {return GetHandleId(this.h);}
     method operator Active ()->boolean {return this.active;}
     method operator Active= (boolean value) {
         this.active= value;
