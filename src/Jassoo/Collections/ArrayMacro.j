@@ -54,7 +54,7 @@
 		return this.table[random];
 	}
 	
-	method GetEnumerator ()->$name$ArrayEnumerator {
+	method GetEnumerator ()->I$name$Enumerator {
 		return $name$ArrayEnumerator.create(this.table, this.size);
 	}
 	
@@ -163,10 +163,37 @@
 		this.table.destroy();
 		this.table = table;
 	}
+    
+	method Sort ($name$Comparer comparer) {
+		this.quickSort(0, this.size - 1, comparer);
+	}
+	
+	private method quickSort (integer low, integer high, $name$Comparer comparer) {
+		if (low >= high) {
+			return;
+		}
+		integer first = low;
+		integer last = high;
+		$datatype$ key = this.table[first];
+		while (first < last) {
+			while (first < last && comparer.evaluate(this.table[last], key) >= 0 ) {
+				last -= 1;
+			}
+			this.table[first] = this.table[last];
+
+			while (first < last && comparer.evaluate(this.table[first], key) <= 0) {
+				first += 1;
+			}
+			this.table[last] = this.table[first];
+		}
+		this.table[first] = key;
+		this.quickSort(low, first - 1, comparer);
+		this.quickSort(first + 1, high, comparer);
+	}
 //! endtextmacro
 
-//! textmacro _ArrayEnumerator takes name, dataType
-public struct $name$ArrayEnumerator {
+//! textmacro ArrayEnumerator takes name, dataType
+private struct $name$ArrayEnumerator extends I$name$Enumerator {
 	private $name$Table table;
 	private integer size;
 	private integer position;

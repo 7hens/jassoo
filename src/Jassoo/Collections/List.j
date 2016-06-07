@@ -1,4 +1,4 @@
-public struct List {
+public struct List extends ICollection {
     delegate Node Node;
 
     static method create ()->List {

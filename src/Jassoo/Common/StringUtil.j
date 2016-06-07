@@ -5,7 +5,7 @@ private function subString (string source, integer start, integer end)->string {
 
 public struct StringUtil {
 	static method Render (string str, Argb color)->string {return "|c"+ color.ToString()+ str+ "|r";}
-	static method HashCode (string str)->integer {return StringHash(str);}
+	static method Hash (string str)->integer {return StringHash(str);}
 	static method Length (string str)->integer {return StringLength(str);}
 
 	static method Contains (string str, string pattern)->boolean {

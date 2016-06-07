@@ -239,7 +239,7 @@ public struct Node {
 				firstSize = i;
 				secondSize = step;
 				while (firstSize > 0 || (secondSize > 0 && second != 0)) {
-					if (firstSize > 0 && (secondSize == 0 || second == 0 || comparer.evaluate(first, second))) {
+					if (firstSize > 0 && (secondSize == 0 || second == 0 || comparer.evaluate(first, second) <= 0)) {
 						temp = first;
 						first = first.Next;
 						firstSize -= 1;
