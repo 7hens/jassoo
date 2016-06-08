@@ -2,6 +2,7 @@ public {
     type Void extends function ();
     type Action extends function (integer);
     type Func extends function (integer)->integer;
+    type Filter extends function (integer)->boolean;
 
     type Comparer extends function (integer, integer)->integer;
     type BooleanComparer extends function (boolean, boolean)->integer;

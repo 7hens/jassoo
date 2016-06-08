@@ -62,7 +62,7 @@ public struct Math {
 	static method Sqrt (real r)->real {return SquareRoot(r);}
 	static method InvSqrt (real r)->real {
 		if (!(r!= 0)) {
-			debug Print("[Math.InvSqrt] the value equals zero.");
+			debug Log.Error("Math.InvSqrt", "the value equals zero.");
 			return 0;
 		}
 		return 1/ SquareRoot(r);
@@ -71,7 +71,7 @@ public struct Math {
 	static method Cbrt (real r)->real {return Math.Power(r, 0.333333);}
 	static method InvCbrt (real r)->real {
 		if (!(r!= 0)) {
-			debug Print("[Math.InvCbrt] the value equals zero.");
+			debug Log.Error("Math.InvCbrt", "the value equals zero.");
 			return 0;
 		}
 		return 1/ Math.Power(r, 0.333333);

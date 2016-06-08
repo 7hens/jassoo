@@ -5,6 +5,6 @@ public struct Test {
 	}
 	
 	private static method onInit () {
-		Event.Start.Add(Test.MyAction);
+		Event.Start.AddAction(Test.MyAction);
 	}
 }

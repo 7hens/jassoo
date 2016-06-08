@@ -168,12 +168,12 @@ public struct Unit extends IWidget {
 	        u= null;
 	        return false;
         }));
-		Event.EnterRegion.Add(function (integer i) {
+		Event.EnterRegion.AddAction(function (integer i) {
 			if (Event.Region== Region.WorldRegion) {
 				Group.WorldGroup.Add(Unit.bind(GetEnteringUnit()));
 			}
 		});
-		Event.LeaveRegion.Add(function (Unit u) {
+		Event.LeaveRegion.AddAction(function (Unit u) {
 			if (Event.Region== Region.WorldRegion) {
 				Group.WorldGroup.Remove(u);
 				Game.FlushInteger(u.HandleId);

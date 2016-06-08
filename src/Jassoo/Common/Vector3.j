@@ -65,8 +65,8 @@ public struct Vector3 {
 	}
 	method GetAngleWith (Vector3 that)->real {
 		real mul= this.Length* that.Length;
-		if (!(mul!= 0)) {
-			debug Print("[Vector3.GetAngleWith] The length of at least one of the vectors is 0.0!");
+		if (!(mul != 0)) {
+			debug Log.Error("Vector3.GetAngleWith", "The length of at least one of the vectors is 0.0!");
 			return 0.0;
 		}
 		return Acos((this.X* that.X+ this.Y* that.Y+ this.Z* that.Z)/ mul);
@@ -103,7 +103,7 @@ public struct Vector3 {
 	method Project (Vector3 direction)->Vector3 {
 		real len2 = direction.X* direction.X+ direction.Y* direction.Y+ direction.Z*direction.Z;
 		if (!(len2!= 0.0)) {
-			debug Print("[Vector3.Project] The length of the direction vector is 0.0!");
+			debug Log.Error("Vector3.Project", "The length of the direction vector is 0.0!");
 			return 0;
 		}
 		len2 = (this.X* direction.X+ this.Y* direction.Y+ this.Z* direction.Z)/ len2;
@@ -117,7 +117,7 @@ public struct Vector3 {
 		real f= 0.0;
 		real c= Cos(angle), s= Sin(angle);
 		if (!(al!= 0.0)) {
-			debug Print("[Vector3.Rotate] The length of the axis vector is 0.0!");
+			debug Log.Error("Vector3.Rotate", "The length of the axis vector is 0.0!");
 			return this;
 		}
 		f= (this.X* axis.X+ this.Y* axis.Y+ this.Z* axis.Z)/ al;
@@ -154,7 +154,7 @@ public struct Vector3 {
 			return false;
 		len2=  cylinderHeight.X* cylinderHeight.X+ cylinderHeight.Y* cylinderHeight.Y+ cylinderHeight.Z* cylinderHeight.Z;
 		if (!(len2!=  0.0)) {
-			debug Print("[Vector3.IsInCylinder] The length of the cylinderHeight vector is 0.0!");
+			debug Log.Error("Vector3.IsInCylinder", "The length of the cylinderHeight vector is 0.0!");
 			return false;
 		}
 		len2=  (x* cylinderHeight.X+ y*cylinderHeight.Y+ z* cylinderHeight.Z)/ len2;
@@ -174,8 +174,8 @@ public struct Vector3 {
 		if (x* coneHeight.X+ y* coneHeight.Y+ z* coneHeight.Z< 0.0)
 			return false;
 		len2= coneHeight.X* coneHeight.X+ coneHeight.Y* coneHeight.Y+ coneHeight.Z* coneHeight.Z;
-		if (!(len2!= 0.0)) {
-			debug Print("[Vector3.IsInCone] The length of the coneHeight vector is 0.0!");
+		if (!(len2 != 0.0)) {
+			debug Log.Error("Vector3.IsInCone", "The length of the coneHeight vector is 0.0!");
 			return false;
 		}
 		len2= (x* coneHeight.X+ y* coneHeight.Y+ z* coneHeight.Z)/ len2;

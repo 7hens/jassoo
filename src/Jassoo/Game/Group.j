@@ -1,125 +1,139 @@
 public struct Group {
-	static Group WorldGroup= 0;
-	private delegate List List= 0;
+	static Group WorldGroup = 0;
+	delegate Stack Stack = 0;
 
 	static method create ()->Group {
-		Group this= List.create();
-		this.List= this;
+		Group this = Stack.create();
+		this.Stack = this;
 		return this;
 	}
-	method destroy () {this.List.destroy();}
-
-	method operator FirstUnit ()->Unit {return this.First.Data;}
-	method operator LastUnit ()->Unit {return this.Last.Data;}
+	method destroy () {this.Stack.destroy();}
 
 	method GetCenterPoint ()->Point {
 		Point result= Point.create();
-		Unit enum;
-		Node i;
-		if (this.Empty)
-			return result;
-		for (i= this.First; i!= 0; i= i.Next) {
-			enum= i.Data;
-			result.Reset(result.X+ enum.X, result.Y+ enum.Y);
-		}
-		return result.Scale(1/ this.Size);
+		Unit u = 0;
+		IEnumerator e = this.GetEnumerator();
+        if (this.IsEmpty()) {
+            return result;
+        }
+        while (e.MoveNext()) {
+            u = e.Current;
+            result.Reset(result.X + u.X, result.Y + u.Y);
+        }
+		return result.Scale(1 / this.Size);
 	}
 	method GetClosestUnit (Unit u)->Unit {
 		real sqrDist, minSqrDist;
-		Unit result, enum;
-		Node i;
-		if (this.Empty) return 0;
-		result= this.First.Data;
-		if (this.Size== 1) return result;
-		if (result== u) result= this.Last.Data;
+		Unit result, v;
+		IEnumerator e = this.GetEnumerator();
+		if (this.IsEmpty()) return 0;
+        
+		result = this.First;
+		if (this.Size == 1) return result;
+		if (result == u) result = this.Last;
+        
 		u.ResetPoint();
 		result.ResetPoint();
-		minSqrDist= u.GetSquaredDistanceWith(result);
-		for (i= this.First; i!= 0; i= i.Next) {
-			enum= i.Data;
-			if (enum!= u&& enum!= result) {
-				enum.ResetPoint();
-				sqrDist= u.GetSquaredDistanceWith(enum);
-				if (sqrDist< minSqrDist) {
-					result= enum;
-					minSqrDist= sqrDist;
+		minSqrDist = u.GetSquaredDistanceWith(result);
+        
+        while (e.MoveNext()) {
+            v = e.Current;
+            if (v != u && v != result) {
+                v.ResetPoint();
+				sqrDist= u.GetSquaredDistanceWith(v);
+                
+				if (sqrDist < minSqrDist) {
+					result = v;
+					minSqrDist = sqrDist;
 				}
-			}
-		}
+            }
+        }
 		return result;
 	}
+    
 	method GetFurthestUnit (Unit u)->Unit {
-		real sqrDist, maxSqrDist;
-		Unit result, enum;
-		Node i;
-		if (this.Empty) return 0;
-		result= this.First.Data;
-		if (this.Size== 1) return result;
-		if (result== u) result= this.Last.Data;
+		real sqrDist, minSqrDist;
+		Unit result, v;
+		IEnumerator e = this.GetEnumerator();
+		if (this.IsEmpty()) return 0;
+        
+		result = this.First;
+		if (this.Size == 1) return result;
+		if (result == u) result = this.Last;
+        
 		u.ResetPoint();
 		result.ResetPoint();
-		maxSqrDist= u.GetSquaredDistanceWith(result);
-		for (i= this.First; i!= 0; i= i.Next) {
-			enum= i.Data;
-			if (enum!= u&& enum!= result) {
-				enum.ResetPoint();
-				sqrDist= u.GetSquaredDistanceWith(enum);
-				if (sqrDist> maxSqrDist) {
-					result= enum;
-					maxSqrDist= sqrDist;
+		minSqrDist = u.GetSquaredDistanceWith(result);
+        
+        while (e.MoveNext()) {
+            v = e.Current;
+            if (v != u && v != result) {
+                v.ResetPoint();
+				sqrDist= u.GetSquaredDistanceWith(v);
+                
+				if (sqrDist > minSqrDist) {
+					result = v;
+					minSqrDist = sqrDist;
 				}
-			}
-		}
+            }
+        }
 		return result;
 	}
+    
 	method Add (Unit u) {
-		if (!this.List.Contains(u))
-			this.List.Add(u);
+		if (!this.Contains(u)) {
+			this.Stack.Add(u);
+        }
 	}
+    
 	method Push (Unit u) {
-		if (!this.List.Contains(u))
-			this.List.Push(u);
+		if (!this.Contains(u)) {
+			this.Stack.Push(u);
+        }
 	}
-	method AddGroup (Group grp)->Group {
-		Node i;
-		for (i= grp.First; i!= 0; i= i.Next)
-			this.Add(i.Data);
-		return grp;
+    
+	method AddGroup (Group grp) {
+        IEnumerator e = this.GetEnumerator();
+        while (e.MoveNext()) {
+            this.Add(e.Current);
+        }
 	}
+    
 	method Refresh ()->Group {
-		Node i, j;
-		Unit enum;
-		for (i= this.First; i!= 0; i= j) {
-			j= i.Next;
-			enum= i.Data;
-			if (!enum.Alive|| enum.Handle== null)
-				i.destroy();
-		}
-		return this;
+        this.Filter(Unit.IsAlive);
+        return this;
 	}
+    
 	method AddUnitsInRange (Point pos, real radius) {
-		Unit enum;
-		Node i;
-		for (i= Group.WorldGroup.First; i!= 0; i= i.Next) {
-			enum= i.Data;
-			if (enum.IsInRange(pos, radius))
-				this.Add(enum);
-		}
+        IEnumerator e = this.GetEnumerator();
+        Unit current = 0;
+        while (e.MoveNext()) {
+            current = e.Current;
+            if (current.IsInRange(pos, radius)) {
+                this.Add(current);
+            }
+        }
 	}
+    
 	method OrderImmediate (integer orderId) {
-		Node i;
-		for (i= this.First; i!= 0; i= i.Next)
-			Unit(i.Data).OrderImmediate(orderId);
+        IEnumerator e = this.GetEnumerator();
+        while (e.MoveNext()) {
+			Unit(e.Current).OrderImmediate(orderId);
+        }
 	}
+    
 	method OrderPoint (integer orderId, Point pos) {
-		Node i;
-		for (i= this.First; i!= 0; i= i.Next)
-			Unit(i.Data).OrderPoint(orderId, pos);
+        IEnumerator e = this.GetEnumerator();
+        while (e.MoveNext()) {
+			Unit(e.Current).OrderPoint(orderId, pos);
+        }
 	}
+    
 	method OrderTarget (integer orderId, IWidget target) {
-		Node i;
-		for (i= this.First; i!= 0; i= i.Next)
-			Unit(i.Data).OrderTarget(orderId, target);
+        IEnumerator e = this.GetEnumerator();
+        while (e.MoveNext()) {
+			Unit(e.Current).OrderTarget(orderId, target);
+        }
 	}
 
 	private static method onInit () {

@@ -48,8 +48,8 @@ public struct Vector2 {
 	}
 	method GetAngleWith (Vector2 that)->real {
 		real mul= this.Length* that.Length;
-		if (!(mul!= 0)) {
-			debug Print("[Vector2.GetAngleWith] The length of at least one of the vectors is 0.0!");
+		if (!(mul != 0)) {
+			debug Log.Error("Vector2.GetAngleWith", "The length of at least one of the vectors is 0.0!");
 			return 0.0;
 		}
 		return Acos((this.X* that.X+ this.Y* that.Y)/ mul);
@@ -80,7 +80,7 @@ public struct Vector2 {
 	method Project (Vector2 direction)->Vector2 {
 		real len2 = direction.X* direction.X+ direction.Y* direction.Y;
 		if (!(len2!= 0.0)) {
-			debug Print("[Vector2.Project] The length of the direction vector is 0.0!");
+			debug Log.Error("Vector2.Project", "The length of the direction vector is 0.0!");
 			return 0;
 		}
 		len2 = (this.X* direction.X+ this.Y* direction.Y)/ len2;

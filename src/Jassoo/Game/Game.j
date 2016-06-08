@@ -43,8 +43,8 @@ struct Game {
 		Game.True= Condition(function ()->boolean {return true;});
 		Game.False= Condition(function ()->boolean {return false;});
 		Game.gameTimer= Timer.New(Game.Forever, 0, 0);
-    	Event.Start.Add(function (integer i) {
-	        debug Print("[Game.gameStart] map initialized!"+ Console.TimeMark);
+    	Event.Start.AddAction(function (integer i) {
+	        debug Log.Info("Game.gameStart", "map initialized!"+ Console.TimeMark);
 	        Game.gameTimer.Restart();
     	});
     	DestroyForce(f);

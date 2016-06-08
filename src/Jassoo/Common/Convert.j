@@ -21,7 +21,7 @@ public struct Convert {
 		integer result= 0, char= 0, i= 0;
 		for (0<= i< strLength) {
 			char= StringUtil.IndexOf(charSet, SubString(s, i, i+ 1));
-			debug Console.Assert(char>= 0, "[Convert.S2Id] The converted char is not between 32 &&  126!");
+			debug Log.Assert(char>= 0, "Convert.S2Id", "The converted char is not between 32 &&  126!");
 			result+= (char+ 32)* R2I(Math.Power(256.0, strLength- i- 1));
 		}
 		return result;
@@ -33,7 +33,7 @@ public struct Convert {
 		while (id> 0) {
 			modulo= R2I(Math.Modulo(id, 256.0));
 			if (modulo< 32 || modulo> 126) {
-				debug Print("[Convert.Id2S] The modulo("+ I2S(modulo)+ ") is not in [32, 126]");
+				debug Log.Warn("Convert.Id2S", "The modulo("+ I2S(modulo)+ ") is not in [32, 126]");
 				result+= "€";
 			}
 			result+= SubString(charSet, modulo- 32, modulo- 31);
@@ -49,14 +49,14 @@ public struct Convert {
 		integer sign= 1;
 		integer begin= 0;
 		integer char= 0;
-		debug {if (base< 2|| base> 64) Print("[Convert.S2Int] The base("+ I2S(base)+ ") must be in [2, 64]!");}
+        debug Log.Assert(base > 1 && base <= 64, "Convert.S2Int", "The base("+ I2S(base)+ ") must be in [2, 64]!");
 		if (SubString(s, 0, 1)== "-") {
 			sign= -1;
 			begin= 1;
 		}
 		while (begin< strLength) {
 			char= StringUtil.IndexOf(charSet, SubString(s, begin, begin+ 1));
-			debug {if (char< 0) Print("[Convert.S2Int] Try to convert '"+ s+ "' as base("+ I2S(base)+ ")!");}
+            debug Log.Assert(char >= 0, "Convert.S2Int", "Try to convert '"+ s+ "' as base("+ I2S(base)+ ")!");
 			begin= begin+ 1;
 			result= result+ char* R2I(Math.Power(base, strLength- begin));
 		}
@@ -66,7 +66,7 @@ public struct Convert {
 		string charSet= SubString(Convert.charSet64, 0, base);
 		string result= "";
 		integer modulo= 0;
-		debug {if(base< 2|| base> 64) Print("[Convert.Int2S] the base("+ I2S(base)+ ") must be between [2, 64]!");}
+        debug Log.Assert(base > 1 && base <= 64, "Convert.Int2S", "The base("+ I2S(base)+ ") must be in [2, 64]!");
 		if (i< 0) {
 			result= "-";
 			i= -i;
@@ -97,7 +97,7 @@ public struct Convert {
 			result= R2S(r);
 			return StringUtil.SubStr(result, StringLength(result)+ count- 3);
 		}
-		debug Print("[Convert.Real2S] the decimal digits("+ I2S(count) +") is lower than zero!");
+		debug Log.Error("Convert.Real2S", "the decimal digits("+ I2S(count) +") is lower than zero!");
 		return "";
 	}
 

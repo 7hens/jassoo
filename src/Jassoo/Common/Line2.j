@@ -34,7 +34,7 @@ public struct Line2 {
 	method GetVector ()->Vector2 {return Vector2.create().Reset(this.End.X- this.Start.X, this.End.Y- this.Start.Y);}
 	method GetUnitVector ()->Vector2 {
 		if (this.Start.Equals(this.End)) {
-			debug Print("[Line2.GetUnitVector] The length of line equals zero.");
+			debug Log.Error("Line2.GetUnitVector", "The length of line equals zero.");
 			return 0;
 		}
 		return this.End.GetCopy().Subtract(this.Start).Scale(1/ this.Length);

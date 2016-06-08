@@ -1,13 +1,13 @@
 public struct Region {
-	private static List disposedRectList;
+	private static Stack disposedRectStack;
 	static Region WorldRegion;
 	static rect WorldRect;
 	private region h;
-	private delegate List List;
+	private delegate Stack Stack;
 
     static method create ()->Region {
-    	Region this= List.create();
-    	this.List= this;
+    	Region this= Stack.create();
+    	this.Stack= this;
     	this.h= CreateRegion();
     	Game.PutInteger(this.HandleId, this);
         TriggerRegisterEnterRegion(Event.EnterRegion.Handle, this.h, Game.True);
@@ -15,12 +15,13 @@ public struct Region {
         return this;
     }
     method destroy () {
+        IEnumerator e = this.GetEnumerator();
+        while (e.MoveNext()) {
+	    	Region.disposedRectStack.Add(e.Current);
+        }
 	    Game.FlushInteger(this.HandleId);
-	    this.List.Traverse(function (integer data) {
-	    	Region.disposedRectList.Add(data);
-	    });
 	    RemoveRegion(this.h);
-	    this.List.destroy();
+	    this.Stack.destroy();
     }
 
 	method operator Handle ()->region {return this.h;}
@@ -28,40 +29,43 @@ public struct Region {
     method AddRect (Point min, Point max) {
 		rect rec= null;
 		integer id= 0;
-		if (Region.disposedRectList.Empty) {
+		if (Region.disposedRectStack.IsEmpty()) {
 			rec= Rect(min.X, min.Y, max.X, max.Y);
 			id= GetHandleId(rec);
 			Game.PutRect(id, rec);
 		} else {
-			id= Region.disposedRectList.Pop();
+			id= Region.disposedRectStack.Pop();
 			rec= Game.GetRect(id);
 			SetRect(rec, min.X, min.Y, max.X, max.Y);
 		}
-        this.List.Add(id);
+        this.Stack.Add(id);
         RegionAddRect(this.Handle, rec);
         rec= null;
     }
 
     method SetFog (integer fogType, GamePlayer plr, boolean shareVision) {
-    	Node i;
+    	IEnumerator e = this.GetEnumerator();
         fogstate fogState=  FOG_OF_WAR_FOGGED;
-        if (fogType== 1)
+        if (fogType == 1) {
             fogState= FOG_OF_WAR_MASKED;
-        else if (fogType==2)
+        } else if (fogType == 2) {
         	fogState= FOG_OF_WAR_VISIBLE;
-    	for (i= this.First; i!= 0; i= i.Next)
-    		SetFogStateRect(Player(plr), fogState, Game.GetRect(i.Data), shareVision);
+        }
+        while (e.MoveNext()) {
+    		SetFogStateRect(Player(plr), fogState, Game.GetRect(e.Current), shareVision);
+        }
         fogState= null;
     }
 
     method SetWeather (integer weatherType) {
-    	Node i;
-    	for (i= this.First; i!= 0; i= i.Next)
-            AddWeatherEffect(Game.GetRect(i.Data), weatherType);
+    	IEnumerator e = this.GetEnumerator();
+        while (e.MoveNext()) {
+            AddWeatherEffect(Game.GetRect(e.Current), weatherType);
+        }
     }
 
 	private static method onInit () {
-        Region.disposedRectList= List.create();
+        Region.disposedRectStack= Stack.create();
 		Region.WorldRegion= Region.create();
 		Region.WorldRect= GetWorldBounds();
 		RegionAddRect(Region.WorldRegion.h, Region.WorldRect);

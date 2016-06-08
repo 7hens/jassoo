@@ -33,7 +33,7 @@ public struct Line3 {
 	method GetUnitVector ()->Vector3 {
 		Vector3 start= this.Line2.Start, end= this.Line2.End;
 		if (start.Equals(end)) {
-			debug Print("[Line3.GetUnitVector] The length of line equals zero.");
+			debug Log.Error("Line3.GetUnitVector", "The length of line equals zero.");
 			return 0;
 		}
 		return end.GetCopy().Subtract(start).Scale(1/ this.Length);

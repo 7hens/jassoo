@@ -20,7 +20,7 @@ public struct Event [event_MaxCount] {
 		Sell= 51, Use= 52, Pick= 53, Drop= 54, Pawn= 55, Damage= 56,
 		EnterRegion= 57, LeaveRegion= 58;
 
-    private delegate List Actions;
+    private Stack Actions;
     private trigger h;
     private boolean registered;
 
@@ -73,12 +73,14 @@ public struct Event [event_MaxCount] {
 	//! runtextmacro Wrapper_Event_TriggerPosition("Spell", "SpellTarget", "X")
 	//! runtextmacro Wrapper_Event_TriggerPosition("Spell", "SpellTarget"", "Y")
 
-	method Add (Action action) {
+	method AddAction (Action action) {
 		if (!this.registered) {
 			EnableTrigger(this.h);
 			this.registered= true;
 		}
-		this.Actions.Add(action);
+        if (!this.Actions.Contains(action)) {
+            this.Actions.Add(action);
+        }
 	}
 
     private static method onInit () {
@@ -88,14 +90,17 @@ public struct Event [event_MaxCount] {
         for (i= 0; i< event_MaxCount; i+= 1) {
             this= i;
             this.h= CreateTrigger();
-            this.Actions= List.create();
+            this.Actions= Stack.create();
             this.registered= false;
             Game.PutTrigger(GetHandleId(this.h), this.h);
             Game.PutInteger(GetHandleId(this.h), this);
             DisableTrigger(this.h);
             TriggerAddCondition(this.h, Condition(function ()->boolean {
 				Event this= Game.GetInteger(GetHandleId(GetTriggeringTrigger()));
-				this.Actions.Evaluate(Game.GetInteger(GetHandleId(GetTriggerUnit())));
+                IEnumerator e = this.Actions.GetEnumerator();
+                while (e.MoveNext()) {
+                    Action(e.Current).evaluate(Game.GetInteger(GetHandleId(GetTriggerUnit())));
+                }
 				return false;
             }));
         }

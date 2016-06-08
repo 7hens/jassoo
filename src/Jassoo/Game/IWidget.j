@@ -9,7 +9,6 @@ public interface IWidget {
 	method operator UserData= (integer userData)= null;
     method operator Level ()->integer= 0;
     method operator Level= (integer level)= null;
-    method operator Alive ()->boolean= false;
     method operator HP ()->real= 0;
     method operator HP= (real hp)= null;
     method operator MaxHP ()->real= 0;
@@ -27,6 +26,7 @@ public interface IWidget {
     method operator Face= (real face)= null;
     method operator Player ()->GamePlayer= 0;
     method operator Player= (GamePlayer plr)= null;
+    method IsAlive ()->boolean= false;
 	method SetColor (Argb color)= null;
 	method SetPosition (Point pos)= null;
 	method ResetXY (real x, real y)->Point= 0;
@@ -44,7 +44,7 @@ private module widgetModule {
     method operator Z ()->real {return this.FlyHeight+ this.TerrainZ;}
     method operator HP ()->real {return GetWidgetLife(this.h);}
     method operator HP= (real value) {SetWidgetLife(this.h, value);}
-    method operator Alive ()->boolean {return GetWidgetLife(this.h)> 0.0;}
+    method IsAlive ()->boolean {return GetWidgetLife(this.h) > 0.0;}
     method SetColor (Argb color) { AddIndicator(this.h, color.R, color.G, color.B, color.A);}
 
     method GetShiftedPoint (Point offsetPoint, boolean relative)->Point {

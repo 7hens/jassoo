@@ -1,4 +1,4 @@
-//! textmacro Array_Common takes name, valueType
+//! textmacro Array_Common takes name, valueType, defaultValue
 	private $name$Table table;
 	private integer size;
 	
@@ -31,24 +31,24 @@
 		this.size = size;
 	}
 	
-	method operator First ()->$dataType$ {
+	method operator First ()->$valueType$ {
 		if (this.size <= 0) {
 			return 0;
 		}
 		return this.table[0];
 	}
 	
-	method operator Last ()->$dataType$ {
+	method operator Last ()->$valueType$ {
 		if (this.size <= 0) {
 			return 0;
 		}
 		return this.table[this.size - 1];
 	}
 	
-	method operator Random ()->$dataType$ {
+	method operator Random ()->$valueType$ {
 		integer random = 0;
 		if (this.size <= 0) {
-			return 0;
+			return $defaultValue$;
 		}
 		random = R2I(Math.Random * this.size);
 		return this.table[random];
@@ -58,22 +58,22 @@
 		return $name$ArrayEnumerator.create(this.table, this.size);
 	}
 	
-	method operator [] (integer index)->$dataType$ {
+	method operator [] (integer index)->$valueType$ {
 		if (index < 0) {
 			if (index < -this.size) {
 				debug Log.Error("Array.[]", "the given index (" + I2S(index) + ") must be greater than -this.size (" + I2S(this.size) + ")");
-				return 0;
+				return null;
 			}
 			index += this.size;
 		}
 		return this.table[index];
 	}
 	
-	method operator []= (integer index, $dataType$ value) {
+	method operator []= (integer index, $valueType$ value) {
 		if (index < 0) {
 			if (index < -this.size) {
 				debug Log.Error("Array.[]=", "the given index (" + I2S(index) + ") must be greater than -this.size (" + I2S(this.size) + ")");
-				return 0;
+				return;
 			}
 			index += this.size;
 		} else if (index >= this.size) {
@@ -86,7 +86,7 @@
 		return this.size <= 0;
 	}
 	
-	method Contains ($dataType$ value)->boolean {
+	method Contains ($valueType$ value)->boolean {
 		integer i = 0;
 		for (i = 0; i < this.size; i += 1) {
 			if (this.table[i] == value) {
@@ -101,13 +101,13 @@
 		this.table = $name$Table.create();
 	}
 	
-	method Push ($dataType$ value) {
+	method Push ($valueType$ value) {
 		this.table[this.size] = value;
 		this.size += 1;
 	}
 	
-	method Pop ()->$dataType$ {
-		$dataType$ value = 0;
+	method Pop ()->$valueType$ {
+		$valueType$ value;
 		if (this.size > 0) {
 			this.size -= 1;
 			value = this.table[this.size];
@@ -116,7 +116,7 @@
 		return value;
 	}
 	
-	method Unshift ($dataType$ value) {
+	method Unshift ($valueType$ value) {
 		integer i = 0;
 		for (i = this.size; i > 0; i -= 1) {
 			this.table[i] = this.table[i - 1];
@@ -125,9 +125,9 @@
 		this.size += 1;
 	}
 	
-	method Shift ()->$dataType$ {
+	method Shift ()->$valueType$ {
 		integer i = 0;
-		$dataType$ value = 0;
+		$valueType$ value;
 		if (this.size > 0) {
 			this.size -= 1;
 			value = this.table[0];
@@ -139,7 +139,7 @@
 		return value;
 	}
 	
-	method Remove ($dataType$ value)->boolean {
+	method Remove ($valueType$ value)->boolean {
 		integer i = 0;
 		boolean result = false;
 		for (i = 0; i < this.size; i += 1) {
@@ -169,12 +169,12 @@
 	}
 	
 	private method quickSort (integer low, integer high, $name$Comparer comparer) {
+		integer first = low;
+		integer last = high;
+		$valueType$ key = this.table[first];
 		if (low >= high) {
 			return;
 		}
-		integer first = low;
-		integer last = high;
-		$datatype$ key = this.table[first];
 		while (first < last) {
 			while (first < last && comparer.evaluate(this.table[last], key) >= 0 ) {
 				last -= 1;
@@ -192,20 +192,20 @@
 	}
 //! endtextmacro
 
-//! textmacro ArrayEnumerator takes name, dataType
+//! textmacro ArrayEnumerator takes name, valueType, defaultValue
 private struct $name$ArrayEnumerator extends I$name$Enumerator {
 	private $name$Table table;
 	private integer size;
 	private integer position;
 	
-	method operator Current ()->$dataType$ {
+	method operator Current ()->$valueType$ {
 		if (this.position < 0) {
-			return 0;
+			return $defaultValue$;
 		}
 		return this.table[this.position];
 	}
 	
-	static method create ($name$Table table, integer size) {
+	static method create ($name$Table table, integer size)->thistype {
 		thistype this = thistype.allocate();
 		this.table = table;
 		this.size = size;

@@ -86,7 +86,7 @@ public struct StringUtil {
 	static method SubStr (string str, integer length)->string {
 		integer strLen= StringLength(str);
 		if (length> strLen || length< -strLen) {
-			debug Print("[StringUtil.SubStr] the length("+ I2S(length)+ ") is out of range(\""+ str+ "\")!");
+			debug Log.Error("StringUtil.SubStr", "the length("+ I2S(length)+ ") is out of range(\""+ str+ "\")!");
 			return str;
 		}
 		if (length>= 0)
@@ -174,35 +174,33 @@ public struct StringUtil {
 	// Split("a,,b, c", ","); //--["a", "", "b", " c"]
 	// Split("ab, c, \nd", ", \n"); //--["ab", "c", "d"]
 	static method Split (string str, string delimiters)->StringArray {
-		StringArray result= StringArray.create();
-		integer strLen= StringLength(str);
-		integer delimLen= StringLength(delimiters);
+		StringArray result = StringArray.create();
+		integer strLen = StringLength(str);
+		integer delimLen = StringLength(delimiters);
 		integer i=0, j=0, prev=0;
-		if (str== "") return result;
-		if (delimLen== 0) {
-			strLen= R2I(Math.Min(strLen, StringArray.size));
-			for (0<= i< strLen)
-				result[i]= StringUtil.CharAt(str, i);
+		if (str == "") return result;
+		if (delimLen == 0) {
+			for (0 <= i < strLen)
+				result[i] = StringUtil.CharAt(str, i);
 			return result;
 		}
-		for (i=0; i< strLen&& j< StringArray.size; i+=1) {
-			if (StringUtil.Contains(delimiters, subString(str, i, i+ 1))) {
-				result[j]= subString(str, prev, i);
-				j+= 1;
-				prev= i+ 1;
+		for (0 <= i < strLen) {
+			if (StringUtil.Contains(delimiters, subString(str, i, i + 1))) {
+				result[j] = subString(str, prev, i);
+				j += 1;
+				prev = i+ 1;
 			}
 		}
-		if (j< StringArray.size)
-			result[j]= subString(str, prev, strLen);
+        result[j]= subString(str, prev, strLen);
 		return result;
 	}
 	// It will cause a bug, if you set @para separator as "|"
 	static method Join (StringArray arr, string separator)->string {
 		string result= "";
 		integer i;
-		for (i= 1; i< StringArray.size&& arr[i]!= null; i+= 1) {
-			result+= separator+ arr[i];
-		}
+        for (1 <= i < arr.Size) {
+			result += separator + arr[i];
+        }
 		return arr[0]+ result;
 	}
 }

@@ -17,12 +17,8 @@ library Jassoo {
     //! import "src/Jassoo/Collections/ICollection.j"
     //! import "src/Jassoo/Collections/ArrayMacro.j"
     //! import "src/Jassoo/Collections/Array.j"
-    //! import "src/Jassoo/Collections/Node.j"
-    //! import "src/Jassoo/Collections/List.j"
-    //! import "src/Jassoo/Collections/Tree.j"
-    //! import "src/Jassoo/Collections/IStack.j"
+    //! import "src/Jassoo/Collections/StackNode.j"
     //! import "src/Jassoo/Collections/Stack.j"
-    //! import "src/Jassoo/Collections/Queue.j"
 
     //! import "src/Jassoo/Game/Console.j"
     //! import "src/Jassoo/Game/Timer.j"

@@ -1,6 +1,6 @@
-//! textmacro _IEnumerator takes name, dataType
+//! textmacro _IEnumerator takes name, valueType
 public interface I$name$Enumerator {
-    method operator Current ()->$dataType$;
+    method operator Current ()->$valueType$;
     method MoveNext ()->boolean;
     method Reset ();
 }

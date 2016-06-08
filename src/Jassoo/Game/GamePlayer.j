@@ -77,10 +77,10 @@ public struct GamePlayer [15] {
 			this.SelectedUnits= Group.create();
 			this.GivesBounty= true;
 		}
-		Event.Select.Add(function (Unit u) {
+		Event.Select.AddAction(function (Unit u) {
 			Event.Player.SelectedUnits.Add(u);
 		});
-		Event.Deselect.Add(function (Unit u) {
+		Event.Deselect.AddAction(function (Unit u) {
 			Event.Player.SelectedUnits.Remove(u);
 		});
 	}

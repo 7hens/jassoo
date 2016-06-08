@@ -1,7 +1,26 @@
-public struct Stack extends IStack {
+public struct Stack {
     private StackNode stack;
+    private StackNode rear;
+    private integer size;
 
-    method operator Top ()->integer {
+    static method create ()->thistype {
+        thistype this = StackNode.create();
+        this.stack = this;
+        this.rear = this;
+        this.size = 0;
+        return this;
+    }
+
+    method destroy () {
+        this.size = 0;
+        this.stack.destroy();
+    }
+    
+    method operator Size ()->integer {
+        return this.size;
+    }
+
+    method operator First ()->integer {
         StackNode next = this.stack.Next;
         if (next != 0) {
             return next.Data;
@@ -9,38 +28,66 @@ public struct Stack extends IStack {
         return 0;
     }
     
-    method operator Size ()->integer {
-        return this.stack.Size;
-    }
-
-    static method create ()->thistype {
-        thistype this = StackNode.create();
-        this.stack = this;
-        return this;
-    }
-
-    method destroy () {
-        this.stack.destroy();
+    method operator Last ()->integer {
+        return this.rear.Data;
     }
     
-    method Clear () {
-        this.stack.Clear();
+	method operator Random ()->integer {
+		integer random = R2I(Math.Random * this.size);
+        StackNode i = this.stack.Next;
+        while (i != 0 && random > 0) {
+            random -= 1;
+            i = i.Next;
+        }
+        return i.Data;
+	}
+    
+    method Add (integer value) {
+        this.size += 1;
+        this.rear = this.rear.Push(value);
     }
     
-    method IsEmpty ()->boolean {
-        return this.stack.Next == 0;
-    }
-    
-    method Contains (integer value)->boolean {
-        return ths.stack.Contains(value);
-    }
-
     method Push (integer value) {
-        this.stack.push(value);
+        this.size += 1;
+        this.stack.Push(value);
     }
 
     method Pop ()->integer {
-        return this.stack.pop();
+        if (this.size > 0) {
+            this.size -= 1;
+            return this.stack.Pop();
+        }
+        return 0;
+    }
+    
+    method Clear () {
+        this.size = 0;
+        this.stack.Clear();
+        this.rear = this.stack;
+    }
+    
+    method IsEmpty ()->boolean {
+        return this.size == 0;
+    }
+    
+    method Contains (integer value)->boolean {
+        return this.stack.NodeOf(value) != 0;
+    }
+    
+    method Count (integer value)->integer {
+        return this.stack.Count(value);
+    }
+    
+    method Remove (integer value)->boolean {
+        return this.stack.Remove(value);
+    }
+    
+    method Purge (integer value)->integer {
+        return this.stack.Purge(value);
+    }
+    
+    method Filter (Filter filter)->integer {
+        return this.stack.Filter(filter);
     }
 
     method GetEnumerator ()->IEnumerator {
@@ -48,94 +95,3 @@ public struct Stack extends IStack {
     }
 }
 
-private struct StackNode {
-    integer Data;
-    thistype Next;
-    
-    method operator Size ()->integer {
-        integer size = 0;
-        thistype i = this.Next;
-        while (i != 0) {
-            this.Next = i.Next;
-            size += 1;
-        }
-        return size;
-    }
-
-    static method create ()->thistype {
-        thistype this = thistype.allocate();
-        this.Data = 0;
-        this.Next = 0;
-    }
-    
-    method destroy () {
-        this.Clear();
-        this.deallocate()；
-    }
-    
-    method Clear () {
-        thistype i = this.Next;
-        while (i != 0) {
-            this.Next = i.Next;
-            i.deallocate();
-        }
-    }
-    
-    method Contains (integer value)->boolean {
-        thistype i = this.Next;
-        while (i != 0) {
-            if (i.Data == value) {
-                return true;
-            }
-            i = i.Next;
-        }
-        return false;
-    }
-
-    method Push (integer value)->thistype {
-        thistype node = thistype.allocate();
-        node.Data = value;
-        node.Next = this.Next;
-        this.Next = node;
-        return this;
-    }
-
-    method Pop ()->integer {
-        thistype next = this.Next;
-        integer value = 0;
-        if (next != 0) {
-            value = next.Data;
-            this.Next = next.Next;
-            next.destroy();
-        }
-        return value;
-    }
-}
-
-private struct StackEnumerator extends IEnumerator {
-    private StackNode stack;
-    private StackNode cursor;
-
-    static method create (StackNode stack)->thistype {
-        thistype this = thistype.allocate();
-        this.stack = stack;
-        this.cursor = stack;
-        return this;
-    }
-
-    method operator Current ()->integer {
-        return this.cursor.Data;
-    }
-
-    method MoveNext ()->boolean {
-        if (this.cursor != 0) {
-            this.cursor = this.cursor.Next;
-            return true;
-        }
-        return false;
-    }
-
-    method Reset () {
-        this.cursor = this.stack;
-    }
-}

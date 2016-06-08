@@ -1,6 +1,6 @@
 public struct Timer {
-    private static delegate List List= 0;
-    private delegate List Actions= 0;
+    private static delegate Stack Stack= 0;
+    private delegate Stack Actions= 0;
     real Timeout= 0.0;
     boolean Periodic= false;
     integer Data= 0;
@@ -14,7 +14,7 @@ public struct Timer {
 		Timer this= Timer.allocate();
 		this.h= CreateTimer();
 		Game.PutInteger(this.HandleId, this);
-		this.Actions= List.create();
+		this.Actions= Stack.create();
 		this.timerDialog= CreateTimerDialog(this.h);
 		TimerDialogSetTitle(this.timerDialog, "");
 		TimerDialogDisplay(this.timerDialog, false);
@@ -31,24 +31,24 @@ public struct Timer {
 	}
     static method New (real timeout, integer data, Action action)->Timer {
         Timer this=  0;
-        if (Timer.List.Empty)
+        if (Timer.Stack.IsEmpty())
 	        return Timer.create(timeout, data, action);
         this= Timer.Pop();
         this.disposed= false;
         return this.Reset(timeout, data, action);
     }
     method Dispose () {
-        if (!this.disposed&& this.h!= null) {
-            this.Data= 0;
-            this.Active= false;
-            this.Periodic= false;
-            this.Title= "";
+        if (!this.disposed && this.h != null) {
+            this.Data = 0;
+            this.Active = false;
+            this.Periodic = false;
+            this.Title = "";
             TimerDialogDisplay(this.timerDialog, false);
             TimerDialogSetSpeed(this.timerDialog, 1.0);
             this.SetTitleColor(0xFFFFFC01);
             this.SetTimeColor(0xFFFFFC01);
             this.Actions.Clear();
-            Timer.Unshift(this);
+            Timer.Add(this);
             this.disposed= true;
         }
     }
@@ -93,16 +93,17 @@ public struct Timer {
 
     private static method handlerFunction () {
         Timer this= Game.GetInteger(GetHandleId(GetExpiredTimer()));
-        Node i;
+        IEnumerator e = this.GetEnumerator();
         this.active= this.Periodic;
-        for (i= this.First; i!= 0; i= i.Next)
-	        Action(i.Data).evaluate(this.Data);
-        if (this.active && this.Timeout> 0.0)
+        while (e.MoveNext()) {
+            Action(e.Current).evaluate(this.Data);
+        }
+        if (this.active && this.Timeout > 0.0)
             TimerStart(this.h, this.Timeout, false, function Timer.handlerFunction);
         else
             this.Dispose();
     }
     private static method onInit () {
-        Timer.List= List.create();
+        Timer.Stack= Stack.create();
     }
 }
