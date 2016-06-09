@@ -5,11 +5,11 @@ public struct Dialog {
 	static method create ()->Dialog {
 		Dialog this= Dialog.allocate();
 		this.h= DialogCreate();
-		Game.PutInteger(this.HandleId, this);
+		Utils.PutInteger(this.HandleId, this);
 		return this;
 	}
 	method destroy () {
-		Game.FlushInteger(this.HandleId);
+		Utils.FlushInteger(this.HandleId);
 		DialogDestroy(this.h);
 		this.h= null;
 		this.deallocate();
@@ -25,7 +25,7 @@ public struct Dialog {
 		button btn= DialogAddButton(this.h, buttonText, hotkey);
 		integer id= GetHandleId(btn);
 		if (action!= 0) {
-			Game.PutInteger(id, action);
+			Utils.PutInteger(id, action);
 			TriggerRegisterDialogButtonEvent(Dialog.trig, btn);
 		}
 		btn= null;
@@ -34,7 +34,7 @@ public struct Dialog {
 		Dialog.trig= CreateTrigger();
 		TriggerAddCondition(Dialog.trig, function ()->boolean {
 			integer id= GetHandleId(GetClickedButton());
-			Action(Game.GetInteger(id)).evaluate(Game.GetInteger(GetHandleId(GetClickedDialog())));
+			Action(Utils.GetInteger(id)).evaluate(Utils.Get(GetClickedDialog()));
 			return false;
 		});
 	}

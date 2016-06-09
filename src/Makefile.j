@@ -20,6 +20,7 @@ library Jassoo {
     //! import "src/Jassoo/Collections/StackNode.j"
     //! import "src/Jassoo/Collections/Stack.j"
 
+    //! import "src/Jassoo/Game/Utils.j"
     //! import "src/Jassoo/Game/Console.j"
     //! import "src/Jassoo/Game/Timer.j"
     //! import "src/Jassoo/Game/Event.j"

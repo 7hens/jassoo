@@ -11,11 +11,11 @@ public struct Lightning {
 		this.Line3.Reset(p, q);
 		this.h= AddLightningEx(Lightning.getCodeName(i), false, p.X, p.Y, p.Z, q.X, q.Y, q.Z);
 		this.lightningType= i;
-		Game.PutInteger(this.HandleId, this);
+		Utils.PutInteger(this.HandleId, this);
 		return this;
 	}
 	method destroy () {
-		Game.FlushInteger(this.HandleId);
+		Utils.FlushInteger(this.HandleId);
 		DestroyLightning(this.h);
 		this.h= null;
 		this.Line3.destroy();
@@ -40,10 +40,10 @@ public struct Lightning {
 		Argb color= this.color;
 		if (this.lightningType== value) return;
 		this.lightningType= value;
-		Game.FlushInteger(this.HandleId);
+		Utils.FlushInteger(this.HandleId);
 		DestroyLightning(this.h);
 		this.h= AddLightningEx(Lightning.getCodeName(value), this.checkVisibility, p.X, p.Y, p.Z, q.X, q.Y, q.Z);
-		Game.PutInteger(this.HandleId, this);
+		Utils.PutInteger(this.HandleId, this);
 		SetLightningColor(this.h, color.R, color.G, color.B, color.A);
 	}
 

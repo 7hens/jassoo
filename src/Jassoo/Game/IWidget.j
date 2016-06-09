@@ -46,7 +46,7 @@ private module widgetModule {
     method operator HP= (real value) {SetWidgetLife(this.h, value);}
     method IsAlive ()->boolean {return GetWidgetLife(this.h) > 0.0;}
     method SetColor (Argb color) { AddIndicator(this.h, color.R, color.G, color.B, color.A);}
-
+    
     method GetShiftedPoint (Point offsetPoint, boolean relative)->Point {
         Point pos= Point.create();
         real face= this.Face;

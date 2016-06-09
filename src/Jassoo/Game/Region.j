@@ -9,7 +9,7 @@ public struct Region {
     	Region this= Stack.create();
     	this.Stack= this;
     	this.h= CreateRegion();
-    	Game.PutInteger(this.HandleId, this);
+    	Utils.PutInteger(this.HandleId, this);
         TriggerRegisterEnterRegion(Event.EnterRegion.Handle, this.h, Game.True);
         TriggerRegisterLeaveRegion(Event.LeaveRegion.Handle, this.h, Game.True);
         return this;
@@ -19,27 +19,27 @@ public struct Region {
         while (e.MoveNext()) {
 	    	Region.disposedRectStack.Add(e.Current);
         }
-	    Game.FlushInteger(this.HandleId);
+	    Utils.FlushInteger(this.HandleId);
 	    RemoveRegion(this.h);
 	    this.Stack.destroy();
     }
 
-	method operator Handle ()->region {return this.h;}
-	method operator HandleId ()->integer {return GetHandleId(this.h);}
+	method operator Handle ()->region { return this.h; }
+	method operator HandleId ()->integer { return GetHandleId(this.h); }
     method AddRect (Point min, Point max) {
-		rect rec= null;
+		rect rec = null;
 		integer id= 0;
 		if (Region.disposedRectStack.IsEmpty()) {
-			rec= Rect(min.X, min.Y, max.X, max.Y);
-			id= GetHandleId(rec);
-			Game.PutRect(id, rec);
+			rec = Rect(min.X, min.Y, max.X, max.Y);
+			id = GetHandleId(rec);
+			Utils.PutRect(id, rec);
 		} else {
-			id= Region.disposedRectStack.Pop();
-			rec= Game.GetRect(id);
+			id = Region.disposedRectStack.Pop();
+			rec = Utils.GetRect(id);
 			SetRect(rec, min.X, min.Y, max.X, max.Y);
 		}
         this.Stack.Add(id);
-        RegionAddRect(this.Handle, rec);
+        RegionAddRect(this.h, rec);
         rec= null;
     }
 
@@ -52,7 +52,7 @@ public struct Region {
         	fogState= FOG_OF_WAR_VISIBLE;
         }
         while (e.MoveNext()) {
-    		SetFogStateRect(Player(plr), fogState, Game.GetRect(e.Current), shareVision);
+    		SetFogStateRect(Player(plr), fogState, Utils.GetRect(e.Current), shareVision);
         }
         fogState= null;
     }
@@ -60,7 +60,7 @@ public struct Region {
     method SetWeather (integer weatherType) {
     	IEnumerator e = this.GetEnumerator();
         while (e.MoveNext()) {
-            AddWeatherEffect(Game.GetRect(e.Current), weatherType);
+            AddWeatherEffect(Utils.GetRect(e.Current), weatherType);
         }
     }
 
@@ -69,6 +69,6 @@ public struct Region {
 		Region.WorldRegion= Region.create();
 		Region.WorldRect= GetWorldBounds();
 		RegionAddRect(Region.WorldRegion.h, Region.WorldRect);
-		Game.PutRect(GetHandleId(Region.WorldRect), Region.WorldRect);
+		Utils.PutRect(GetHandleId(Region.WorldRect), Region.WorldRect);
     }
 }

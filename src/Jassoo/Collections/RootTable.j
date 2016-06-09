@@ -6,7 +6,7 @@ public struct RootTable {
 		this.deallocate();
 	}
 
-	//! textmacro Table_ExistsAndFlush takes dataType, hashType
+	//! textmacro Jassoo_Table_ExistsAndFlush takes dataType, hashType
     method Exists$dataType$ (integer index)->boolean {
 		return HaveSaved$hashType$(thistype.ht, this, index);
 	}
@@ -15,11 +15,11 @@ public struct RootTable {
 		RemoveSaved$hashType$(thistype.ht, this, index);
 	}
 	//! endtextmacro
-	//! runtextmacro Table_ExistsAndFlush("Boolean", 	"Boolean")
-	//! runtextmacro Table_ExistsAndFlush("Integer", 	"Integer")
-	//! runtextmacro Table_ExistsAndFlush("Real", 	 	"Real")
-	//! runtextmacro Table_ExistsAndFlush("String", 	"String")
-	//! runtextmacro Table_ExistsAndFlush("Handle", 	"Handle")
+	//! runtextmacro Jassoo_Table_ExistsAndFlush("Boolean", "Boolean")
+	//! runtextmacro Jassoo_Table_ExistsAndFlush("Integer", "Integer")
+	//! runtextmacro Jassoo_Table_ExistsAndFlush("Real",    "Real")
+	//! runtextmacro Jassoo_Table_ExistsAndFlush("String",  "String")
+	//! runtextmacro Jassoo_Table_ExistsAndFlush("Handle",  "Handle")
 	
 	method ExistsAny (integer index)->boolean {
 		return HaveSavedBoolean(thistype.ht, this, index)
@@ -37,7 +37,7 @@ public struct RootTable {
     	RemoveSavedHandle(thistype.ht, this, index);
     }
 
-	//! textmacro Table_GetAndPut takes dataType, hashType, valueType
+	//! textmacro Jassoo_Table_GetAndPut takes dataType, hashType, valueType
     method Get$dataType$ (integer index)->$valueType$ {
 		return Load$hashType$(thistype.ht, this, index);
 	}
@@ -46,13 +46,13 @@ public struct RootTable {
 		Save$hashType$(thistype.ht, this, index, value);
 	}
 	//! endtextmacro
-	//! runtextmacro Table_GetAndPut("Boolean", 	"Boolean", 			"boolean")
-	//! runtextmacro Table_GetAndPut("Integer", 	"Integer", 			"integer")
-	//! runtextmacro Table_GetAndPut("Real", 		"Real", 			"real")
-	//! runtextmacro Table_GetAndPut("String", 		"Str", 				"string")
+	//! runtextmacro Jassoo_Table_GetAndPut("Boolean", 	"Boolean", 	"boolean")
+	//! runtextmacro Jassoo_Table_GetAndPut("Integer", 	"Integer", 	"integer")
+	//! runtextmacro Jassoo_Table_GetAndPut("Real", 	"Real", 	"real")
+	//! runtextmacro Jassoo_Table_GetAndPut("String", 	"Str", 		"string")
 	
 	
-	//! textmacro Table_GetAndPutHandle takes dataType, valueType
+	//! textmacro Jassoo_Table_GetAndPutHandle takes dataType, valueType
     method Get$dataType$ (integer index)->$valueType$ {
 		return Load$dataType$Handle(thistype.ht, this, index);
 	}
@@ -61,27 +61,27 @@ public struct RootTable {
 		Save$dataType$Handle(thistype.ht, this, index, value);
 	}
 	//! endtextmacro
-	//! runtextmacro Table_GetAndPutHandle("Timer", 			"timer")
-	//! runtextmacro Table_GetAndPutHandle("Effect", 			"effect")
-	//! runtextmacro Table_GetAndPutHandle("Lightning", 		"lightning")
-	//! runtextmacro Table_GetAndPutHandle("TextTag", 			"texttag")
-	//! runtextmacro Table_GetAndPutHandle("Trigger", 			"trigger")
-	//! runtextmacro Table_GetAndPutHandle("Quest", 			"quest")
-	//! runtextmacro Table_GetAndPutHandle("Dialog", 			"dialog")
-	//! runtextmacro Table_GetAndPutHandle("Button", 			"button")
-	//! runtextmacro Table_GetAndPutHandle("Multiboard", 		"multiboard")
-	//! runtextmacro Table_GetAndPutHandle("MultiboardItem", 	"multiboarditem")
-	//! runtextmacro Table_GetAndPutHandle("Rect", 				"rect")
-	//! runtextmacro Table_GetAndPutHandle("Region", 			"region")
-	//! runtextmacro Table_GetAndPutHandle("Image", 			"image")
-	//! runtextmacro Table_GetAndPutHandle("Sound", 			"sound")
-	//! runtextmacro Table_GetAndPutHandle("Widget", 			"widget")
-	//! runtextmacro Table_GetAndPutHandle("Destructable", 		"destructable")
-	//! runtextmacro Table_GetAndPutHandle("Item", 				"item")
-	//! runtextmacro Table_GetAndPutHandle("Unit", 				"unit")
+	//! runtextmacro Jassoo_Table_GetAndPutHandle("Timer", 			"timer")
+	//! runtextmacro Jassoo_Table_GetAndPutHandle("Effect", 		"effect")
+	//! runtextmacro Jassoo_Table_GetAndPutHandle("Lightning", 		"lightning")
+	//! runtextmacro Jassoo_Table_GetAndPutHandle("TextTag", 		"texttag")
+	//! runtextmacro Jassoo_Table_GetAndPutHandle("Trigger", 		"trigger")
+	//! runtextmacro Jassoo_Table_GetAndPutHandle("Quest", 			"quest")
+	//! runtextmacro Jassoo_Table_GetAndPutHandle("Dialog", 		"dialog")
+	//! runtextmacro Jassoo_Table_GetAndPutHandle("Button", 		"button")
+	//! runtextmacro Jassoo_Table_GetAndPutHandle("Multiboard", 	"multiboard")
+	//! runtextmacro Jassoo_Table_GetAndPutHandle("MultiboardItem", "multiboarditem")
+	//! runtextmacro Jassoo_Table_GetAndPutHandle("Rect", 			"rect")
+	//! runtextmacro Jassoo_Table_GetAndPutHandle("Region", 		"region")
+	//! runtextmacro Jassoo_Table_GetAndPutHandle("Image", 			"image")
+	//! runtextmacro Jassoo_Table_GetAndPutHandle("Sound", 			"sound")
+	//! runtextmacro Jassoo_Table_GetAndPutHandle("Widget", 		"widget")
+	//! runtextmacro Jassoo_Table_GetAndPutHandle("Destructable", 	"destructable")
+	//! runtextmacro Jassoo_Table_GetAndPutHandle("Item", 			"item")
+	//! runtextmacro Jassoo_Table_GetAndPutHandle("Unit", 			"unit")
 	
 	private static method onInit () {
-		thistype.ht= InitHashtable();
+		thistype.ht = InitHashtable();
 	}
 }
 

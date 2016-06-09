@@ -7,24 +7,25 @@ public struct Group {
 		this.Stack = this;
 		return this;
 	}
-	method destroy () {this.Stack.destroy();}
+	method destroy () { this.Stack.destroy(); }
 
 	method GetCenterPoint ()->Point {
-		Point result= Point.create();
-		Unit u = 0;
+		Point result = Point.create();
+		Unit current = 0;
 		IEnumerator e = this.GetEnumerator();
         if (this.IsEmpty()) {
             return result;
         }
         while (e.MoveNext()) {
-            u = e.Current;
-            result.Reset(result.X + u.X, result.Y + u.Y);
+            current = e.Current;
+            result.Reset(result.X + current.X, result.Y + current.Y);
         }
 		return result.Scale(1 / this.Size);
 	}
+    
 	method GetClosestUnit (Unit u)->Unit {
 		real sqrDist, minSqrDist;
-		Unit result, v;
+		Unit result, current;
 		IEnumerator e = this.GetEnumerator();
 		if (this.IsEmpty()) return 0;
         
@@ -37,13 +38,13 @@ public struct Group {
 		minSqrDist = u.GetSquaredDistanceWith(result);
         
         while (e.MoveNext()) {
-            v = e.Current;
-            if (v != u && v != result) {
-                v.ResetPoint();
-				sqrDist= u.GetSquaredDistanceWith(v);
+            current = e.Current;
+            if (current != u && current != result) {
+                current.ResetPoint();
+				sqrDist= u.GetSquaredDistanceWith(current);
                 
 				if (sqrDist < minSqrDist) {
-					result = v;
+					result = current;
 					minSqrDist = sqrDist;
 				}
             }
@@ -53,7 +54,7 @@ public struct Group {
     
 	method GetFurthestUnit (Unit u)->Unit {
 		real sqrDist, minSqrDist;
-		Unit result, v;
+		Unit result, current;
 		IEnumerator e = this.GetEnumerator();
 		if (this.IsEmpty()) return 0;
         
@@ -66,13 +67,13 @@ public struct Group {
 		minSqrDist = u.GetSquaredDistanceWith(result);
         
         while (e.MoveNext()) {
-            v = e.Current;
-            if (v != u && v != result) {
-                v.ResetPoint();
-				sqrDist= u.GetSquaredDistanceWith(v);
+            current = e.Current;
+            if (current != u && current != result) {
+                current.ResetPoint();
+				sqrDist= u.GetSquaredDistanceWith(current);
                 
 				if (sqrDist > minSqrDist) {
-					result = v;
+					result = current;
 					minSqrDist = sqrDist;
 				}
             }

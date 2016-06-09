@@ -1,4 +1,4 @@
-//! textmacro Array_Common takes name, valueType, defaultValue
+//! textmacro Jassoo_Array_Common takes name, valueType, defaultValue
 	private $name$Table table;
 	private integer size;
 	
@@ -192,7 +192,7 @@
 	}
 //! endtextmacro
 
-//! textmacro ArrayEnumerator takes name, valueType, defaultValue
+//! textmacro Jassoo_ArrayEnumerator takes name, valueType, defaultValue
 private struct $name$ArrayEnumerator extends I$name$Enumerator {
 	private $name$Table table;
 	private integer size;

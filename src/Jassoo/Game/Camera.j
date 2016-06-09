@@ -1,9 +1,9 @@
 public struct Camera {
-	static method operator X ()->real {return GetCameraEyePositionX();}
-	static method operator Y ()->real {return GetCameraEyePositionX();}
-	static method operator Z ()->real {return GetCameraEyePositionX();}
+	static method operator X ()->real { return GetCameraEyePositionX(); }
+	static method operator Y ()->real { return GetCameraEyePositionX(); }
+	static method operator Z ()->real { return GetCameraEyePositionX(); }
 
-	static method Reset (real duration) {ResetToGameCamera(duration);}
+	static method Reset (real duration) { ResetToGameCamera(duration); }
 	static method MoveTo (Vector3 pos, real duration) {
 		PanCameraToTimedWithZ(pos.X, pos.Y, pos.Z, duration);
 	}

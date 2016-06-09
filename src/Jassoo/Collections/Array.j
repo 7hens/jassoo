@@ -1,22 +1,22 @@
 public struct Array {
-	//! runtextmacro Array_Common("", "thistype", "0")
+	//! runtextmacro Jassoo_Array_Common("", "thistype", "0")
 }
-//! runtextmacro ArrayEnumerator("", "integer", "0")
+//! runtextmacro Jassoo_ArrayEnumerator("", "integer", "0")
 
 
 public struct BooleanArray {
-	//! runtextmacro Array_Common("Boolean", "boolean", "false")
+	//! runtextmacro Jassoo_Array_Common("Boolean", "boolean", "false")
 }
-//! runtextmacro ArrayEnumerator("Boolean", "boolean", "false")
+//! runtextmacro Jassoo_ArrayEnumerator("Boolean", "boolean", "false")
 
 
 public struct RealArray {
-	//! runtextmacro Array_Common("Real", "real", "0.0")
+	//! runtextmacro Jassoo_Array_Common("Real", "real", "0.0")
 }
-//! runtextmacro ArrayEnumerator("Real", "real", "0.0")
+//! runtextmacro Jassoo_ArrayEnumerator("Real", "real", "0.0")
 
 
 public struct StringArray {
-	//! runtextmacro Array_Common("String", "string", "null")
+	//! runtextmacro Jassoo_Array_Common("String", "string", "null")
 }
-//! runtextmacro ArrayEnumerator("String", "string", "null")
+//! runtextmacro Jassoo_ArrayEnumerator("String", "string", "null")

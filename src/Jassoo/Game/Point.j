@@ -8,7 +8,9 @@ public struct Point {
 		this.Vector2= this;
 		return this;
 	}
+    
 	method destroy () {this.Vector2.destroy();}
+    
 	method operator TerrainZ ()->real {return Point.GetTerrainZ(this.X, this.Y);}
 	method operator TerrainType ()->integer {return GetTerrainType(this.X, this.Y);}
 
@@ -22,9 +24,11 @@ public struct Point {
 		MoveLocation(Point.loc, x, y);
 		return GetLocationZ(Point.loc);
 	}
+    
 	method GetTerrainVector ()->Vector3 {
 		return Vector3.create().Reset(this.X, this.Y, this.TerrainZ);
 	}
+    
 	method IsPathingType (string pathingType)->boolean {
 		return (
 			pathingType== "DeepWater" &&

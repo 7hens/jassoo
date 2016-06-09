@@ -1,5 +1,5 @@
 private {
-	constant integer event_MaxCount= 59;
+	constant integer event_MaxCount = 59;
 }
 public struct Event [event_MaxCount] {
 	static Event 
@@ -22,44 +22,46 @@ public struct Event [event_MaxCount] {
 
     private Stack Actions;
     private trigger h;
-    private boolean registered;
 
-	method operator Handle ()->trigger {return this.h;}
-	method operator Active ()->boolean {return IsTriggerEnabled(this.h);}
+	method operator Handle ()->trigger { return this.h; }
+    method operator HandleId ()->integer { return GetHandleId(this.h); }
+	method operator Active ()->boolean { return IsTriggerEnabled(this.h); }
 	method operator Active= (boolean active) {
         if (active)  EnableTrigger(this.h);
         else DisableTrigger(this.h);
     }
 
-    static method operator Player ()->GamePlayer {return GetPlayerId(GetTriggerPlayer());}
-	static method operator ChatString ()->string {return GetEventPlayerChatString();}
-	static method operator SpellSkill ()->integer {return GetSpellAbilityId();}
-	static method operator Region ()->Region {return Game.GetInteger(GetHandleId(GetTriggeringRegion()));}
+    static method operator Player ()->GamePlayer { return GetPlayerId(GetTriggerPlayer()); }
+	static method operator ChatString ()->string { return GetEventPlayerChatString(); }
+	static method operator SpellSkill ()->integer { return GetSpellAbilityId(); }
+	static method operator Region ()->Region { return Utils.Get(GetTriggeringRegion()); }
 
-	static method operator Rescuer ()->Unit {return Game.GetInteger(GetHandleId(GetRescuer()));}
-	static method operator Summoner ()->Unit {return Game.GetInteger(GetHandleId(GetSummoningUnit()));}
-	static method operator Attacker ()->Unit {return Game.GetInteger(GetHandleId(GetAttacker()));}
-	static method operator TransportUnit ()->Unit {return Game.GetInteger(GetHandleId(GetKillingUnit()));}
-	static method operator Seller ()->Unit {return Game.GetInteger(GetHandleId(GetSellingUnit()));}
-	static method operator OrderTarget ()->Unit {return Game.GetInteger(GetHandleId(GetOrderTarget()));}
-	static method operator Reviver ()->Unit {return Game.GetInteger(GetHandleId(GetRevivingUnit()));}
-	static method operator Damager ()->Unit {return Game.GetInteger(GetHandleId(GetEventDamageSource()));}
-	static method operator DamageValue ()->real {return GetEventDamage();}
+	static method operator Rescuer ()->Unit { return Utils.Get(GetRescuer()); }
+	static method operator Summoner ()->Unit { return Utils.Get(GetSummoningUnit()); }
+	static method operator Attacker ()->Unit { return Utils.Get(GetAttacker()); }
+	static method operator TransportUnit ()->Unit { return Utils.Get(GetKillingUnit()); }
+	static method operator Seller ()->Unit { return Utils.Get(GetSellingUnit()); }
+	static method operator OrderTarget ()->Unit { return Utils.Get(GetOrderTarget()); }
+	static method operator Reviver ()->Unit { return Utils.Get(GetRevivingUnit()); }
+	static method operator Damager ()->Unit { return Utils.Get(GetEventDamageSource()); }
+	static method operator DamageValue ()->real { return GetEventDamage(); }
 
     static method operator SpellTarget ()->IWidget {
-        integer id= GetHandleId(GetSpellTargetDestructable());
-        if (id!= 0) return Game.GetInteger(id);
-        id= GetHandleId(GetSpellTargetItem());
-        if (id!= 0) return Game.GetInteger(id);
-        return Game.GetInteger(GetHandleId(GetSpellTargetUnit()));
+        integer id = GetHandleId(GetSpellTargetDestructable());
+        if (id != 0) return Utils.GetInteger(id);
+        
+        id = GetHandleId(GetSpellTargetItem());
+        if (id!= 0) return Utils.GetInteger(id);
+        
+        return Utils.GetInteger(GetHandleId(GetSpellTargetUnit()));
     }
     static method operator SoldTarget ()->IWidget {
     	integer id= GetHandleId(GetSoldItem());
-        if (id!= 0) return Game.GetInteger(id);
-        return Game.GetInteger(GetHandleId(GetSoldUnit()));
+        if (id!= 0) return Utils.GetInteger(id);
+        return Utils.GetInteger(GetHandleId(GetSoldUnit()));
     }
 
-	//! textmacro Wrapper_Event_TriggerPosition takes event, position, coord
+	//! textmacro Jassoo_Event_TriggerPosition takes event, position, coord
 	static method operator $event$$coord$ ()->real {
 		IWidget target= Event.$event$Target;
 		if (target!= 0) {
@@ -68,115 +70,118 @@ public struct Event [event_MaxCount] {
 		return Get$position$$coord$();
 	}
 	//! endtextmacro
-	//! runtextmacro Wrapper_Event_TriggerPosition("Order", "OrderPoint", "X")
-	//! runtextmacro Wrapper_Event_TriggerPosition("Order", "OrderPoint", "Y")
-	//! runtextmacro Wrapper_Event_TriggerPosition("Spell", "SpellTarget", "X")
-	//! runtextmacro Wrapper_Event_TriggerPosition("Spell", "SpellTarget"", "Y")
+	//! runtextmacro Jassoo_Event_TriggerPosition("Order", "OrderPoint", "X")
+	//! runtextmacro Jassoo_Event_TriggerPosition("Order", "OrderPoint", "Y")
+	//! runtextmacro Jassoo_Event_TriggerPosition("Spell", "SpellTarget", "X")
+	//! runtextmacro Jassoo_Event_TriggerPosition("Spell", "SpellTarget"", "Y")
 
 	method AddAction (Action action) {
-		if (!this.registered) {
-			EnableTrigger(this.h);
-			this.registered= true;
-		}
+        EnableTrigger(this.h);
         if (!this.Actions.Contains(action)) {
             this.Actions.Add(action);
         }
 	}
+    
+    private method initialize () {
+        this.h = CreateTrigger();
+        this.Actions = Stack.create();
+        Utils.PutTrigger(GetHandleId(this.h), this.h);
+        Utils.PutInteger(GetHandleId(this.h), this);
+        DisableTrigger(this.h);
+        
+        TriggerAddCondition(this.h, Condition(function ()->boolean {
+            thistype this= Utils.Get(GetTriggeringTrigger());
+            IEnumerator e = this.Actions.GetEnumerator();
+            while (e.MoveNext()) {
+                Action(e.Current).evaluate(Utils.Get(GetTriggerUnit()));
+            }
+            return false;
+        }));
+    }
+    
 
     private static method onInit () {
-        Event this= 0;
-        integer i= 0;
-        player plr= null;
-        for (i= 0; i< event_MaxCount; i+= 1) {
-            this= i;
-            this.h= CreateTrigger();
-            this.Actions= Stack.create();
-            this.registered= false;
-            Game.PutTrigger(GetHandleId(this.h), this.h);
-            Game.PutInteger(GetHandleId(this.h), this);
-            DisableTrigger(this.h);
-            TriggerAddCondition(this.h, Condition(function ()->boolean {
-				Event this= Game.GetInteger(GetHandleId(GetTriggeringTrigger()));
-                IEnumerator e = this.Actions.GetEnumerator();
-                while (e.MoveNext()) {
-                    Action(e.Current).evaluate(Game.GetInteger(GetHandleId(GetTriggerUnit())));
-                }
-				return false;
-            }));
+        thistype i = 0;
+        for (0 <= i < event_MaxCount) {
+            i.initialize();
         }
-        TriggerRegisterTimerEvent(Event.Start.h, 0.0, false);
-        for (i= 0; i< 16; i+= 1) {
-            plr= Player(i);
-            TriggerRegisterPlayerChatEvent(Event.Chat.h, plr, "", false);
-
-			//! textmacro Wrapper_Trigger_PlayerEvent takes eventType, event
-    		TriggerRegisterPlayerEvent(Event.$eventType$.h, plr, EVENT_PLAYER_$event$);
-			//! endtextmacro
-			//! runtextmacro Wrapper_Trigger_PlayerEvent ("DownDown", "ARROW_DOWN_DOWN")
-			//! runtextmacro Wrapper_Trigger_PlayerEvent ("DownUp", "ARROW_DOWN_UP")
-			//! runtextmacro Wrapper_Trigger_PlayerEvent ("LeftDown", "ARROW_LEFT_DOWN")
-			//! runtextmacro Wrapper_Trigger_PlayerEvent ("LeftUp", "ARROW_LEFT_UP")
-			//! runtextmacro Wrapper_Trigger_PlayerEvent ("RightDown", "ARROW_RIGHT_DOWN")
-			//! runtextmacro Wrapper_Trigger_PlayerEvent ("RightUp", "ARROW_RIGHT_UP")
-			//! runtextmacro Wrapper_Trigger_PlayerEvent ("UpDown", "ARROW_UP_DOWN")
-			//! runtextmacro Wrapper_Trigger_PlayerEvent ("UpUp", "ARROW_UP_UP")
-			//! runtextmacro Wrapper_Trigger_PlayerEvent ("Esc", "END_CINEMATIC")
-			//! runtextmacro Wrapper_Trigger_PlayerEvent ("Leave", "LEAVE")
-			//! runtextmacro Wrapper_Trigger_PlayerEvent ("Defeat", "DEFEAT")
-			//! runtextmacro Wrapper_Trigger_PlayerEvent ("Victory", "VICTORY")
-			//! runtextmacro Wrapper_Trigger_PlayerEvent ("StateLimit", "STATE_LIMIT")
-			//! runtextmacro Wrapper_Trigger_PlayerEvent ("AllianceChanged", "ALLIANCE_CHANGED")
-
-			//! textmacro Wrapper_Trigger_PlayerUnitEvent takes eventType, event
-	    	TriggerRegisterPlayerUnitEvent(Event.$eventType$.h,  plr, EVENT_PLAYER_$event$, Game.True);
-			//! endtextmacro
-			//! runtextmacro Wrapper_Trigger_PlayerUnitEvent ("Select", "UNIT_SELECTED")
-			//! runtextmacro Wrapper_Trigger_PlayerUnitEvent ("Deselect", "UNIT_DESELECTED")
-			//! runtextmacro Wrapper_Trigger_PlayerUnitEvent ("Detect", "UNIT_DETECTED")
-			//! runtextmacro Wrapper_Trigger_PlayerUnitEvent ("Rescue", "UNIT_RESCUED")
-			//! runtextmacro Wrapper_Trigger_PlayerUnitEvent ("Summon", "UNIT_SUMMON")
-			//! runtextmacro Wrapper_Trigger_PlayerUnitEvent ("Load", "UNIT_LOADED")
-			//! runtextmacro Wrapper_Trigger_PlayerUnitEvent ("Attack", "UNIT_ATTACKED")
-			//! runtextmacro Wrapper_Trigger_PlayerUnitEvent ("Kill", "UNIT_DEATH")
-			//! runtextmacro Wrapper_Trigger_PlayerUnitEvent ("Decay", "UNIT_DECAY")
-			//! runtextmacro Wrapper_Trigger_PlayerUnitEvent ("Revivable", "HERO_REVIVABLE")
-			//! runtextmacro Wrapper_Trigger_PlayerUnitEvent ("Level", "HERO_LEVEL")
-			//! runtextmacro Wrapper_Trigger_PlayerUnitEvent ("Skill", "HERO_SKILL")
-			//! runtextmacro Wrapper_Trigger_PlayerUnitEvent ("Order", "UNIT_ISSUED_ORDER")
-			//! runtextmacro Wrapper_Trigger_PlayerUnitEvent ("PointOrder", "UNIT_ISSUED_POINT_ORDER")
-			//! runtextmacro Wrapper_Trigger_PlayerUnitEvent ("TargetOrder", "UNIT_ISSUED_TARGET_ORDER")
-			//! runtextmacro Wrapper_Trigger_PlayerUnitEvent ("SpellChannel", "UNIT_SPELL_CHANNEL")
-			//! runtextmacro Wrapper_Trigger_PlayerUnitEvent ("SpellCast", "UNIT_SPELL_CAST")
-			//! runtextmacro Wrapper_Trigger_PlayerUnitEvent ("SpellEffect", "UNIT_SPELL_EFFECT")
-			//! runtextmacro Wrapper_Trigger_PlayerUnitEvent ("SpellFinish", "UNIT_SPELL_FINISH")
-			//! runtextmacro Wrapper_Trigger_PlayerUnitEvent ("SpellEnd", "UNIT_SPELL_ENDCAST")
-			//! runtextmacro Wrapper_Trigger_PlayerUnitEvent ("ReviveStart", "HERO_REVIVE_START")
-			//! runtextmacro Wrapper_Trigger_PlayerUnitEvent ("ReviveFinish", "HERO_REVIVE_FINISH")
-			//! runtextmacro Wrapper_Trigger_PlayerUnitEvent ("ReviveCancel", "HERO_REVIVE_CANCEL")
-			//! runtextmacro Wrapper_Trigger_PlayerUnitEvent ("TrainStart", "UNIT_TRAIN_START")
-			//! runtextmacro Wrapper_Trigger_PlayerUnitEvent ("TrainFinish", "UNIT_TRAIN_FINISH")
-			//! runtextmacro Wrapper_Trigger_PlayerUnitEvent ("TrainCancel", "UNIT_TRAIN_CANCEL")
-			//! runtextmacro Wrapper_Trigger_PlayerUnitEvent ("UpgradeStart", "UNIT_UPGRADE_START")
-			//! runtextmacro Wrapper_Trigger_PlayerUnitEvent ("UpgradeFinish", "UNIT_UPGRADE_FINISH")
-			//! runtextmacro Wrapper_Trigger_PlayerUnitEvent ("UpgradeCancel", "UNIT_UPGRADE_CANCEL")
-			//! runtextmacro Wrapper_Trigger_PlayerUnitEvent ("ResearchStart", "UNIT_RESEARCH_START")
-			//! runtextmacro Wrapper_Trigger_PlayerUnitEvent ("ResearchFinish", "UNIT_RESEARCH_FINISH")
-			//! runtextmacro Wrapper_Trigger_PlayerUnitEvent ("ResearchCancel", "UNIT_RESEARCH_CANCEL")
-			//! runtextmacro Wrapper_Trigger_PlayerUnitEvent ("ConstructStart", "UNIT_CONSTRUCT_START")
-			//! runtextmacro Wrapper_Trigger_PlayerUnitEvent ("ConstructFinish", "UNIT_CONSTRUCT_FINISH")
-			//! runtextmacro Wrapper_Trigger_PlayerUnitEvent ("ConstructCancel", "UNIT_CONSTRUCT_CANCEL")
-			//! runtextmacro Wrapper_Trigger_PlayerUnitEvent ("Sell", "UNIT_SELL")
-			//! runtextmacro Wrapper_Trigger_PlayerUnitEvent ("Sell", "UNIT_SELL_ITEM")
-			//! runtextmacro Wrapper_Trigger_PlayerUnitEvent ("Use", "UNIT_USE_ITEM")
-			//! runtextmacro Wrapper_Trigger_PlayerUnitEvent ("Pick", "UNIT_PICKUP_ITEM")
-			//! runtextmacro Wrapper_Trigger_PlayerUnitEvent ("Drop", "UNIT_DROP_ITEM")
-			//! runtextmacro Wrapper_Trigger_PlayerUnitEvent ("Pawn", "UNIT_PAWN_ITEM")
-        }
+        thistype.registerEvent();
         // Enable the struct Group and the trigger Damage
-        EnableTrigger(Event.EnterRegion.h);
-        Event.EnterRegion.registered= true;
-        EnableTrigger(Event.LeaveRegion.h);
-        Event.LeaveRegion.registered= true;
-        plr= null;
+        EnableTrigger(thistype.EnterRegion.h);
+        EnableTrigger(thistype.LeaveRegion.h);
+    }
+    
+    private static method registerEvent () {
+        integer i = 0;
+        player plr = null;
+        TriggerRegisterTimerEvent(thistype.Start.h, 0.0, false);
+        for (0 <= i < 16) {
+            plr= Player(i);
+            TriggerRegisterPlayerChatEvent(thistype.Chat.h, plr, "", false);
+
+			//! textmacro Jassoo_Trigger_PlayerEvent takes eventType, event
+    		TriggerRegisterPlayerEvent(thistype.$eventType$.h, plr, EVENT_PLAYER_$event$);
+			//! endtextmacro
+			//! runtextmacro Jassoo_Trigger_PlayerEvent ("DownDown", "ARROW_DOWN_DOWN")
+			//! runtextmacro Jassoo_Trigger_PlayerEvent ("DownUp", "ARROW_DOWN_UP")
+			//! runtextmacro Jassoo_Trigger_PlayerEvent ("LeftDown", "ARROW_LEFT_DOWN")
+			//! runtextmacro Jassoo_Trigger_PlayerEvent ("LeftUp", "ARROW_LEFT_UP")
+			//! runtextmacro Jassoo_Trigger_PlayerEvent ("RightDown", "ARROW_RIGHT_DOWN")
+			//! runtextmacro Jassoo_Trigger_PlayerEvent ("RightUp", "ARROW_RIGHT_UP")
+			//! runtextmacro Jassoo_Trigger_PlayerEvent ("UpDown", "ARROW_UP_DOWN")
+			//! runtextmacro Jassoo_Trigger_PlayerEvent ("UpUp", "ARROW_UP_UP")
+			//! runtextmacro Jassoo_Trigger_PlayerEvent ("Esc", "END_CINEMATIC")
+			//! runtextmacro Jassoo_Trigger_PlayerEvent ("Leave", "LEAVE")
+			//! runtextmacro Jassoo_Trigger_PlayerEvent ("Defeat", "DEFEAT")
+			//! runtextmacro Jassoo_Trigger_PlayerEvent ("Victory", "VICTORY")
+			//! runtextmacro Jassoo_Trigger_PlayerEvent ("StateLimit", "STATE_LIMIT")
+			//! runtextmacro Jassoo_Trigger_PlayerEvent ("AllianceChanged", "ALLIANCE_CHANGED")
+
+			//! textmacro Jassoo_Trigger_PlayerUnitEvent takes eventType, event
+	    	TriggerRegisterPlayerUnitEvent(thistype.$eventType$.h,  plr, EVENT_PLAYER_$event$, Game.True);
+			//! endtextmacro
+			//! runtextmacro Jassoo_Trigger_PlayerUnitEvent ("Select", "UNIT_SELECTED")
+			//! runtextmacro Jassoo_Trigger_PlayerUnitEvent ("Deselect", "UNIT_DESELECTED")
+			//! runtextmacro Jassoo_Trigger_PlayerUnitEvent ("Detect", "UNIT_DETECTED")
+			//! runtextmacro Jassoo_Trigger_PlayerUnitEvent ("Rescue", "UNIT_RESCUED")
+			//! runtextmacro Jassoo_Trigger_PlayerUnitEvent ("Summon", "UNIT_SUMMON")
+			//! runtextmacro Jassoo_Trigger_PlayerUnitEvent ("Load", "UNIT_LOADED")
+			//! runtextmacro Jassoo_Trigger_PlayerUnitEvent ("Attack", "UNIT_ATTACKED")
+			//! runtextmacro Jassoo_Trigger_PlayerUnitEvent ("Kill", "UNIT_DEATH")
+			//! runtextmacro Jassoo_Trigger_PlayerUnitEvent ("Decay", "UNIT_DECAY")
+			//! runtextmacro Jassoo_Trigger_PlayerUnitEvent ("Revivable", "HERO_REVIVABLE")
+			//! runtextmacro Jassoo_Trigger_PlayerUnitEvent ("Level", "HERO_LEVEL")
+			//! runtextmacro Jassoo_Trigger_PlayerUnitEvent ("Skill", "HERO_SKILL")
+			//! runtextmacro Jassoo_Trigger_PlayerUnitEvent ("Order", "UNIT_ISSUED_ORDER")
+			//! runtextmacro Jassoo_Trigger_PlayerUnitEvent ("PointOrder", "UNIT_ISSUED_POINT_ORDER")
+			//! runtextmacro Jassoo_Trigger_PlayerUnitEvent ("TargetOrder", "UNIT_ISSUED_TARGET_ORDER")
+			//! runtextmacro Jassoo_Trigger_PlayerUnitEvent ("SpellChannel", "UNIT_SPELL_CHANNEL")
+			//! runtextmacro Jassoo_Trigger_PlayerUnitEvent ("SpellCast", "UNIT_SPELL_CAST")
+			//! runtextmacro Jassoo_Trigger_PlayerUnitEvent ("SpellEffect", "UNIT_SPELL_EFFECT")
+			//! runtextmacro Jassoo_Trigger_PlayerUnitEvent ("SpellFinish", "UNIT_SPELL_FINISH")
+			//! runtextmacro Jassoo_Trigger_PlayerUnitEvent ("SpellEnd", "UNIT_SPELL_ENDCAST")
+			//! runtextmacro Jassoo_Trigger_PlayerUnitEvent ("ReviveStart", "HERO_REVIVE_START")
+			//! runtextmacro Jassoo_Trigger_PlayerUnitEvent ("ReviveFinish", "HERO_REVIVE_FINISH")
+			//! runtextmacro Jassoo_Trigger_PlayerUnitEvent ("ReviveCancel", "HERO_REVIVE_CANCEL")
+			//! runtextmacro Jassoo_Trigger_PlayerUnitEvent ("TrainStart", "UNIT_TRAIN_START")
+			//! runtextmacro Jassoo_Trigger_PlayerUnitEvent ("TrainFinish", "UNIT_TRAIN_FINISH")
+			//! runtextmacro Jassoo_Trigger_PlayerUnitEvent ("TrainCancel", "UNIT_TRAIN_CANCEL")
+			//! runtextmacro Jassoo_Trigger_PlayerUnitEvent ("UpgradeStart", "UNIT_UPGRADE_START")
+			//! runtextmacro Jassoo_Trigger_PlayerUnitEvent ("UpgradeFinish", "UNIT_UPGRADE_FINISH")
+			//! runtextmacro Jassoo_Trigger_PlayerUnitEvent ("UpgradeCancel", "UNIT_UPGRADE_CANCEL")
+			//! runtextmacro Jassoo_Trigger_PlayerUnitEvent ("ResearchStart", "UNIT_RESEARCH_START")
+			//! runtextmacro Jassoo_Trigger_PlayerUnitEvent ("ResearchFinish", "UNIT_RESEARCH_FINISH")
+			//! runtextmacro Jassoo_Trigger_PlayerUnitEvent ("ResearchCancel", "UNIT_RESEARCH_CANCEL")
+			//! runtextmacro Jassoo_Trigger_PlayerUnitEvent ("ConstructStart", "UNIT_CONSTRUCT_START")
+			//! runtextmacro Jassoo_Trigger_PlayerUnitEvent ("ConstructFinish", "UNIT_CONSTRUCT_FINISH")
+			//! runtextmacro Jassoo_Trigger_PlayerUnitEvent ("ConstructCancel", "UNIT_CONSTRUCT_CANCEL")
+			//! runtextmacro Jassoo_Trigger_PlayerUnitEvent ("Sell", "UNIT_SELL")
+			//! runtextmacro Jassoo_Trigger_PlayerUnitEvent ("Sell", "UNIT_SELL_ITEM")
+			//! runtextmacro Jassoo_Trigger_PlayerUnitEvent ("Use", "UNIT_USE_ITEM")
+			//! runtextmacro Jassoo_Trigger_PlayerUnitEvent ("Pick", "UNIT_PICKUP_ITEM")
+			//! runtextmacro Jassoo_Trigger_PlayerUnitEvent ("Drop", "UNIT_DROP_ITEM")
+			//! runtextmacro Jassoo_Trigger_PlayerUnitEvent ("Pawn", "UNIT_PAWN_ITEM")
+        }
+        plr = null;
     }
 }

@@ -1,7 +1,7 @@
 public struct Test {
 	private static method MyAction (integer i) {
 		Unit u = Unit.create(GamePlayer[0], 'hpea', Point.Zero, 0);
-		Console.Log("Test");
+		Console.Info("Test");
 	}
 	
 	private static method onInit () {
