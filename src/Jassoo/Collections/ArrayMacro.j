@@ -88,7 +88,7 @@
 	
 	method Contains ($valueType$ value)->boolean {
 		integer i = 0;
-		for (i = 0; i < this.size; i += 1) {
+		for (0 <= i < this.size) {
 			if (this.table[i] == value) {
 				return true;
 			}
@@ -97,8 +97,11 @@
 	}
 	
 	method Clear () {
-		this.table.destroy();
-		this.table = $name$Table.create();
+        if (this.size > 0) {
+            this.size = 0;
+            this.table.destroy();
+            this.table = $name$Table.create();
+        }
 	}
 	
 	method Push ($valueType$ value) {
@@ -118,7 +121,7 @@
 	
 	method Unshift ($valueType$ value) {
 		integer i = 0;
-		for (i = this.size; i > 0; i -= 1) {
+		for (this.size >= i > 0) {
 			this.table[i] = this.table[i - 1];
 		}
 		this.table[0] = value;
@@ -131,7 +134,7 @@
 		if (this.size > 0) {
 			this.size -= 1;
 			value = this.table[0];
-			for (i = 0; i < this.size; i += 1) {
+			for (0 <= i < this.size) {
 				this.table[i] = this.table[i + 1];
 			}
 			this.table.Flush(i);
@@ -142,7 +145,7 @@
 	method Remove ($valueType$ value)->boolean {
 		integer i = 0;
 		boolean result = false;
-		for (i = 0; i < this.size; i += 1) {
+		for (0 <= i < this.size) {
 			if (result) {
 				this.table[i - 1] = this.table[i];
 			}
@@ -157,7 +160,7 @@
 	method Reverse () {
 		$name$Table table = $name$Table.create();
 		integer i = 0;
-		for (i = this.size - 1; i >= 0; i -= 1) {
+		for (this.size > i >= 0) {
 			table[i] = this.table[this.size - i - 1];
 		}
 		this.table.destroy();

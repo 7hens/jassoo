@@ -8,4 +8,19 @@ private struct Utils {
     static method Get (handle h)->integer {
         return thistype.GetInteger(GetHandleId(h));
     }
+    
+	static method TimedEffect (effect h, real duration)->Timer {
+		integer id= GetHandleId(h);
+		Utils.PutEffect(id, h);
+		return Timer.New(duration, id, function (integer id) {
+			Timer t = Utils.Get(GetExpiredTimer());
+			DestroyEffect(Utils.GetEffect(id));
+			Utils.FlushHandle(id);
+			t.Data = t;
+		});
+	}
+    
+    private static method onInit () {
+        thistype.Table = RootTable.create();
+    }
 }

@@ -1,6 +1,6 @@
 public struct Timer {
-    private static delegate Stack Stack= 0;
-    private delegate Stack Actions= 0;
+    private static delegate Stack disposedStack = 0;
+    private delegate Stack Actions = 0;
     real Timeout = 0.0;
     boolean Periodic = false;
     integer Data = 0;
@@ -10,31 +10,30 @@ public struct Timer {
     private string title = "";
     private boolean disposed = false;
 
-	static method create (real timeout, integer data, Action action)->Timer {
-		Timer this= Timer.allocate();
+	static method create (real timeout, integer data, Action action)->thistype {
+		thistype this= thistype.allocate();
 		this.h = CreateTimer();
 		Utils.PutInteger(this.HandleId, this);
 		this.Actions = Stack.create();
-		this.timerDialog = CreateTimerDialog(this.h);
-		TimerDialogSetTitle(this.timerDialog, "");
-		TimerDialogDisplay(this.timerDialog, false);
         return this.Reset(timeout, data, action);
 	}
 	method destroy () {
 		Utils.FlushInteger(this.HandleId);
 		DestroyTimer(this.h);
-		DestroyTimerDialog(this.timerDialog);
 		this.Actions.destroy();
 		this.h= null;
-		this.timerDialog= null;
+        if (this.timerDialog != null) {
+            DestroyTimerDialog(this.timerDialog);
+            this.timerDialog = null;
+        }
 		this.deallocate();
 	}
-    static method New (real timeout, integer data, Action action)->Timer {
-        Timer this = 0;
-        if (Timer.Stack.IsEmpty()) {
-	        return Timer.create(timeout, data, action);
+    static method New (real timeout, integer data, Action action)->thistype {
+        thistype this = 0;
+        if (thistype.IsEmpty()) {
+	        return thistype.create(timeout, data, action);
         }
-        this = Timer.Pop();
+        this = thistype.Pop();
         this.disposed = false;
         return this.Reset(timeout, data, action);
     }
@@ -43,16 +42,25 @@ public struct Timer {
             this.Data = 0;
             this.Active = false;
             this.Periodic = false;
-            this.Title = "";
-            TimerDialogDisplay(this.timerDialog, false);
-            TimerDialogSetSpeed(this.timerDialog, 1.0);
-            this.SetTitleColor(0xFFFFFC01);
-            this.SetTimeColor(0xFFFFFC01);
             this.Actions.Clear();
-            Timer.Add(this);
+            
+            if (this.timerDialog != null) {
+                this.Title = "";
+                TimerDialogDisplay(this.timerDialog, false);
+                TimerDialogSetSpeed(this.timerDialog, 1.0);
+                this.SetTitleColor(0xFFFFFC01);
+                this.SetTimeColor(0xFFFFFC01);
+            }
+            
+            thistype.Add(this);
             this.disposed= true;
         }
     }
+    
+    static method Current ()->thistype {
+        return Utils.Get(GetExpiredTimer());
+    }
+    
     method Reset (real timeout, integer data, Action action)->Timer {
 	    this.Timeout = timeout;
         if (data == 0) data = this;
@@ -74,26 +82,40 @@ public struct Timer {
     method operator Active ()->boolean { return this.active; }
     method operator Active= (boolean value) {
         this.active= value;
-        if (!(TimerGetRemaining(this.h)!= 0)) return;
-        if (value) ResumeTimer(this.h);
-        else PauseTimer(this.h);
+        if (!(TimerGetRemaining(this.h)!= 0)) {
+            return;
+        }
+        if (value) {
+            ResumeTimer(this.h);
+        } else {
+            PauseTimer(this.h);
+        }
     }
     method operator Elapsed ()->real { return TimerGetElapsed(this.h); }
     method operator Remaining ()->real { return TimerGetRemaining(this.h); }
-    method operator Remaining= (real value) { TimerStart(this.h, value, false, function Timer.handlerFunction); }
+    method operator Remaining= (real value) { TimerStart(this.h, value, false, function thistype.handlerFunction); }
 
     //  TimerDialog
-    method operator Visible ()->boolean { return IsTimerDialogDisplayed(this.timerDialog); }
-    method operator Visible= (boolean visible) { TimerDialogDisplay(this.timerDialog, visible); }
+    method operator Visible ()->boolean { return IsTimerDialogDisplayed(this.dialog); }
+    method operator Visible= (boolean visible) { TimerDialogDisplay(this.dialog, visible); }
     method operator Title ()->string { return this.title; }
-    method operator Title= (string value) { this.title= value; TimerDialogSetTitle(this.timerDialog, value); }
+    method operator Title= (string value) { this.title= value; TimerDialogSetTitle(this.dialog, value); }
     method ShowDialog (string title) { this.Visible= true; this.Title= title; }
-    method SetTitleColor (Argb color) { TimerDialogSetTitleColor(this.timerDialog, color.R, color.G, color.B, color.A); }
-    method SetTimeColor (Argb color) { TimerDialogSetTimeColor(this.timerDialog, color.R, color.G, color.B, color.A); }
-    method SetSpeed (real speed) { TimerDialogSetSpeed(this.timerDialog, speed); }
+    method SetTitleColor (Argb color) { TimerDialogSetTitleColor(this.dialog, color.R, color.G, color.B, color.A); }
+    method SetTimeColor (Argb color) { TimerDialogSetTimeColor(this.dialog, color.R, color.G, color.B, color.A); }
+    method SetSpeed (real speed) { TimerDialogSetSpeed(this.dialog, speed); }
+    
+    private method operator dialog ()->timerdialog {
+        if (this.timerDialog == null) {
+            this.timerDialog = CreateTimerDialog(this.h);
+            TimerDialogSetTitle(this.timerDialog, "");
+            TimerDialogDisplay(this.timerDialog, false);
+        }
+        return this.timerDialog;
+    }
 
     private static method handlerFunction () {
-        Timer this= Utils.GetInteger(GetHandleId(GetExpiredTimer()));
+        thistype this = thistype.Current;
         IEnumerator e = this.GetEnumerator();
         this.active= this.Periodic;
         while (e.MoveNext()) {
@@ -101,12 +123,12 @@ public struct Timer {
         }
         
         if (this.active && this.Timeout > 0.0) {
-            TimerStart(this.h, this.Timeout, false, function Timer.handlerFunction);
+            TimerStart(this.h, this.Timeout, false, function thistype.handlerFunction);
         } else {
             this.Dispose();
         }
     }
     private static method onInit () {
-        Timer.Stack = Stack.create();
+        thistype.disposedStack = Stack.create();
     }
 }

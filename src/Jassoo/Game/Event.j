@@ -2,7 +2,7 @@ private {
 	constant integer event_MaxCount = 59;
 }
 public struct Event [event_MaxCount] {
-	static Event 
+	static thistype 
 		Start= 0, Chat= 1,
 		DownUp= 2, DownDown= 3, LeftUp= 4, LeftDown= 5,
 		RightUp= 6, RightDown= 7, UpUp= 8, UpDown= 9,
@@ -31,6 +31,8 @@ public struct Event [event_MaxCount] {
         else DisableTrigger(this.h);
     }
 
+    static method operator Current ()->thistype { return Utils.Get(GetTriggeringTrigger()); }
+    static method operator Unit ()->Unit { return Utils.Get(GetTriggerUnit()); }
     static method operator Player ()->GamePlayer { return GetPlayerId(GetTriggerPlayer()); }
 	static method operator ChatString ()->string { return GetEventPlayerChatString(); }
 	static method operator SpellSkill ()->integer { return GetSpellAbilityId(); }
@@ -63,7 +65,7 @@ public struct Event [event_MaxCount] {
 
 	//! textmacro Jassoo_Event_TriggerPosition takes event, position, coord
 	static method operator $event$$coord$ ()->real {
-		IWidget target= Event.$event$Target;
+		IWidget target= thistype.$event$Target;
 		if (target!= 0) {
 			return target.$coord$;
 		}
@@ -90,10 +92,10 @@ public struct Event [event_MaxCount] {
         DisableTrigger(this.h);
         
         TriggerAddCondition(this.h, Condition(function ()->boolean {
-            thistype this= Utils.Get(GetTriggeringTrigger());
+            thistype this = thistype.Current;
             IEnumerator e = this.Actions.GetEnumerator();
             while (e.MoveNext()) {
-                Action(e.Current).evaluate(Utils.Get(GetTriggerUnit()));
+                Action(e.Current).evaluate(thistype.Unit);
             }
             return false;
         }));

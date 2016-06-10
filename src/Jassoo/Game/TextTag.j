@@ -1,5 +1,6 @@
 public struct TextTag {
 	private texttag h;
+    
 	static method create (string text, Vector3 pos)->TextTag {
 		TextTag this= TextTag.allocate();
 		this.h= CreateTextTag();
@@ -9,12 +10,14 @@ public struct TextTag {
 		SetTextTagPos(this.h, pos.X, pos.Y, pos.Z);
 		return this;
 	}
+    
 	method destroy () {
 		Utils.FlushInteger(this.HandleId);
 		DestroyTextTag(this.h);
 		this.h= null;
 		this.deallocate();
 	}
+    
 	method operator Handle ()->texttag { return this.h; }
 	method operator HandleId ()->integer { return GetHandleId(this.h); }
 	method Display (boolean flag) { SetTextTagVisibility(this.h, flag); }

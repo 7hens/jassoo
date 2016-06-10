@@ -1,5 +1,6 @@
 public struct Vector3 {
-	static Vector3 Zero, UnitX, UnitY, UnitZ, UnitScale, NegativeUnitX, NegativeUnitY, NegativeUnitZ, Temp;
+	static Vector3 Zero, UnitX, UnitY, UnitZ, UnitScale;
+    static Vector3 NegativeUnitX, NegativeUnitY, NegativeUnitZ, Temp;
 	private delegate Vector2 Vector2= 0;
 	real Z= 0.0;
 

@@ -13,7 +13,7 @@ public struct GamePlayer [player_MaxCount] {
     
     method operator SelectedUnits ()->Group { return this.selectedUnits; }
 
-	method operator GivesBounty ()->boolean { return GetPlayerState(this.h, PLAYER_STATE_GIVES_BOUNTY)== 1; }
+	method operator GivesBounty ()->boolean { return GetPlayerState(this.h, PLAYER_STATE_GIVES_BOUNTY) == 1; }
 	method operator GivesBounty= (boolean value) { SetPlayerState(this.h, PLAYER_STATE_GIVES_BOUNTY, Convert.B2I(value)); }
 	method operator Followable ()->boolean { return GetPlayerState(this.h, PLAYER_STATE_UNFOLLOWABLE)== 0; }
 	method operator Followable= (boolean value) { SetPlayerState(this.h, PLAYER_STATE_UNFOLLOWABLE, Convert.B2I(value)); }

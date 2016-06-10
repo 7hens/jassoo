@@ -61,6 +61,6 @@ private module widgetModule {
 	method SetPosition (Point pos) {this.Point.Copy(pos); this.BindPoint();}
 
     method AddEffect (string path ,string attachPoint ,real duration)->Timer {
-        return Game.TimedEffect(AddSpecialEffectTarget(path ,this.h ,attachPoint), duration);
+        return Utils.TimedEffect(AddSpecialEffectTarget(path ,this.h ,attachPoint), duration);
     }
 }

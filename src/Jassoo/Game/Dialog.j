@@ -2,8 +2,8 @@ public struct Dialog {
 	private static trigger trig= null;
 	private dialog h;
 
-	static method create ()->Dialog {
-		Dialog this= Dialog.allocate();
+	static method create ()->thistype {
+		thistype this= thistype.allocate();
 		this.h= DialogCreate();
 		Utils.PutInteger(this.HandleId, this);
 		return this;
@@ -26,13 +26,13 @@ public struct Dialog {
 		integer id= GetHandleId(btn);
 		if (action!= 0) {
 			Utils.PutInteger(id, action);
-			TriggerRegisterDialogButtonEvent(Dialog.trig, btn);
+			TriggerRegisterDialogButtonEvent(thistype.trig, btn);
 		}
 		btn= null;
 	}
 	private static method onInit () {
-		Dialog.trig= CreateTrigger();
-		TriggerAddCondition(Dialog.trig, function ()->boolean {
+		thistype.trig= CreateTrigger();
+		TriggerAddCondition(thistype.trig, function ()->boolean {
 			integer id= GetHandleId(GetClickedButton());
 			Action(Utils.GetInteger(id)).evaluate(Utils.Get(GetClickedDialog()));
 			return false;

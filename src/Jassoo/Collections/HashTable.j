@@ -43,6 +43,10 @@ public struct HashTable {
 		this.FlushString(parentKey, childKey);
 		this.FlushHandle(parentKey, childKey);
     }
+    
+    method FlushChildren (integer parentKey) {
+		FlushChildHashtable(this.ht, parentKey);
+    }
 
 	//! textmacro Jassoo_HashTable_GetAndPut takes dataType, hashType, valueType
     method Get$dataType$ (integer parentKey, integer childKey)->$valueType$ {

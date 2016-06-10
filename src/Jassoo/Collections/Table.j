@@ -24,10 +24,8 @@ public struct $name$Table {
         return this.table.Exists$baseType$(index);
     }
     
-    method Flush (integer index)->$valueType$ {
-        $valueType$ value= this.table.Get$hashType$(index);
+    method Flush (integer index) {
         this.table.Flush$baseType$(index);
-        return value;
     }
 }
 //! endtextmacro

@@ -12,10 +12,10 @@ struct Game {
     static method operator DayTime ()->real { return GetFloatGameState(GAME_STATE_TIME_OF_DAY); }
     static method operator IsLocal ()->boolean { return thistype.isLocal; }
     static method operator Active ()->boolean { return thistype.active; }
-    static method operator Active= (boolean value) { Game.active = value; PauseGame(!value); }
+    static method operator Active= (boolean value) { thistype.active = value; PauseGame(!value); }
 
-    static method Crash () { Game.crash(); }
-    private static method crash () { Game.Crash(); }
+    static method Crash () { thistype.crash(); }
+    private static method crash () { thistype.Crash(); }
 
     // Enviromment
     static method SetSky (string skyModel) { SetSkyModel(skyModel); }
@@ -24,28 +24,22 @@ struct Game {
 	static method SetFog (integer style, real zStart, real zEnd, Argb color ) {
 		SetTerrainFogEx(style, zStart, zEnd, color.A/256.0, color.R/256.0, color.G/256.0, color.B/256.0);
 	}
-	static method TimedEffect (effect h, real duration)->Timer {
-		integer id= GetHandleId(h);
-		Utils.PutEffect(id, h);
-		return Timer.New(duration, id, function (integer id) {
-			Timer t = Utils.Get(GetExpiredTimer());
-			DestroyEffect(Utils.GetEffect(id));
-			Utils.FlushHandle(id);
-			t.Data = t;
-		});
-	}
 
     private static method onInit () {
     	force f = GetPlayersByMapControl(MAP_CONTROL_USER);
     	thistype.isLocal= (CountPlayersInForceBJ(f) == 1);
+        
 		// To avoid the bug of null boolexpr
 		thistype.True= Condition(function ()->boolean { return true; });
 		thistype.False= Condition(function ()->boolean { return false; });
+        
 		thistype.gameTimer = Timer.New(thistype.Forever, 0, 0);
+        
     	Event.Start.AddAction(function (integer i) {
 	        debug Log.Info("Game.gameStart", "map initialized!" + Utils.TimeMark);
 	        thistype.gameTimer.Restart();
     	});
+        
     	DestroyForce(f);
     	f = null;
     }
