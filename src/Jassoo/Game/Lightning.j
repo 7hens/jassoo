@@ -21,19 +21,19 @@ public struct Lightning {
 		this.Line3.destroy();
 	}
 
-	method operator Handle ()->lightning {return this.h;}
-	method operator HandleId ()->integer {return GetHandleId(this.h);}
-	method operator Color ()->Argb {return this.color;}
+	method operator Handle ()->lightning { return this.h; }
+	method operator HandleId ()->integer { return GetHandleId(this.h); }
+	method operator Color ()->Argb { return this.color; }
 	method operator Color= (Argb value) {
 		this.color= value;
 		SetLightningColor(this.h, value.R, value.G, value.B, value.A);
 	}
-	method operator CheckVisibility ()->boolean {return this.checkVisibility;}
+	method operator CheckVisibility ()->boolean { return this.checkVisibility; }
 	method operator CheckVisibility= (boolean value) {
 		this.checkVisibility= value;
 		this.BindLine();
 	}
-	method operator LightningType ()->integer {return this.lightningType;}
+	method operator LightningType ()->integer { return this.lightningType; }
 	method operator LightningType= (integer value) {
 		Vector3 p= this.Line3.Start;
 		Vector3 q= this.Line3.End;

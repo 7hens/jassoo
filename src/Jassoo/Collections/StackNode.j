@@ -33,12 +33,12 @@ private struct StackNode {
     }
 
     method Pop ()->integer {
-        thistype next = this.Next;
+        thistype firstNode = this.Next;
         integer value = 0;
-        if (next != 0) {
-            value = next.Data;
-            this.Next = next.Next;
-            next.destroy();
+        if (firstNode != 0) {
+            value = firstNode.Data;
+            this.Next = firstNode.Next;
+            firstNode.deallocate();
         }
         return value;
     }
@@ -48,6 +48,7 @@ private struct StackNode {
         while (i != 0) {
             this.Next = i.Next;
             i.deallocate();
+            i = this.Next;
         }
     }
     

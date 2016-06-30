@@ -1,11 +1,11 @@
 public struct Stack {
-    private StackNode stack;
+    private StackNode head;
     private StackNode rear;
     private integer size;
 
     static method create ()->thistype {
         thistype this = StackNode.create();
-        this.stack = this;
+        this.head = this;
         this.rear = this;
         this.size = 0;
         return this;
@@ -13,7 +13,7 @@ public struct Stack {
 
     method destroy () {
         this.size = 0;
-        this.stack.destroy();
+        this.head.destroy();
     }
     
     method operator Size ()->integer {
@@ -21,7 +21,7 @@ public struct Stack {
     }
 
     method operator First ()->integer {
-        StackNode next = this.stack.Next;
+        StackNode next = this.head.Next;
         if (next != 0) {
             return next.Data;
         }
@@ -34,7 +34,7 @@ public struct Stack {
     
 	method operator Random ()->integer {
 		integer random = R2I(Math.Random * this.size);
-        StackNode i = this.stack.Next;
+        StackNode i = this.head.Next;
         while (i != 0 && random > 0) {
             random -= 1;
             i = i.Next;
@@ -49,21 +49,21 @@ public struct Stack {
     
     method Push (integer value) {
         this.size += 1;
-        this.stack.Push(value);
+        this.head.Push(value);
     }
 
     method Pop ()->integer {
         if (this.size > 0) {
             this.size -= 1;
-            return this.stack.Pop();
+            return this.head.Pop();
         }
         return 0;
     }
     
     method Clear () {
         this.size = 0;
-        this.stack.Clear();
-        this.rear = this.stack;
+        this.head.Clear();
+        this.rear = this.head;
     }
     
     method IsEmpty ()->boolean {
@@ -71,27 +71,27 @@ public struct Stack {
     }
     
     method Contains (integer value)->boolean {
-        return this.stack.NodeOf(value) != 0;
+        return this.head.NodeOf(value) != 0;
     }
     
     method Count (integer value)->integer {
-        return this.stack.Count(value);
+        return this.head.Count(value);
     }
     
     method Remove (integer value)->boolean {
-        return this.stack.Remove(value);
+        return this.head.Remove(value);
     }
     
     method Purge (integer value)->integer {
-        return this.stack.Purge(value);
+        return this.head.Purge(value);
     }
     
     method Filter (Filter filter)->integer {
-        return this.stack.Filter(filter);
+        return this.head.Filter(filter);
     }
 
     method GetEnumerator ()->IEnumerator {
-        return StackEnumerator.create(this.stack);
+        return StackEnumerator.create(this.head);
     }
 }
 

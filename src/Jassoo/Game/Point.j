@@ -10,10 +10,10 @@ public struct Point {
 		return this;
 	}
     
-	method destroy () {this.Vector2.destroy();}
+	method destroy () { this.Vector2.destroy(); }
     
-	method operator TerrainZ ()->real {return thistype.GetTerrainZ(this.X, this.Y);}
-	method operator TerrainType ()->integer {return GetTerrainType(this.X, this.Y);}
+	method operator TerrainZ ()->real { return thistype.GetTerrainZ(this.X, this.Y); }
+	method operator TerrainType ()->integer { return GetTerrainType(this.X, this.Y); }
 
 	method Clamp ()->thistype {
 		this.X= Math.Clamp(this.X, thistype.Min.X, thistype.Max.X);

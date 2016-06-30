@@ -10,11 +10,11 @@ library Jassoo {
     //! import "src/Jassoo/Common/Line2.j"
     //! import "src/Jassoo/Common/Line3.j"
 
+    //! import "src/Jassoo/Collections/IEnumerator.j"
+    //! import "src/Jassoo/Collections/ICollection.j"
     //! import "src/Jassoo/Collections/HashTable.j"
     //! import "src/Jassoo/Collections/RootTable.j"
     //! import "src/Jassoo/Collections/Table.j"
-    //! import "src/Jassoo/Collections/IEnumerator.j"
-    //! import "src/Jassoo/Collections/ICollection.j"
     //! import "src/Jassoo/Collections/ArrayMacro.j"
     //! import "src/Jassoo/Collections/Array.j"
     //! import "src/Jassoo/Collections/StackNode.j"

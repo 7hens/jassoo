@@ -108,9 +108,6 @@ public struct Event [event_MaxCount] {
             i.initialize();
         }
         thistype.registerEvent();
-        // Enable the struct Group and the trigger Damage
-        EnableTrigger(thistype.EnterRegion.h);
-        EnableTrigger(thistype.LeaveRegion.h);
     }
     
     private static method registerEvent () {

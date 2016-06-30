@@ -15,12 +15,12 @@ public struct Dialog {
 		this.deallocate();
 	}
 
-	method operator Handle ()->dialog {return this.h;}
-	method operator HandleId ()->integer {return GetHandleId(this.h);}
+	method operator Handle ()->dialog { return this.h; }
+	method operator HandleId ()->integer { return GetHandleId(this.h); }
 
-	method Clear () {DialogClear(this.h);}
-	method SetText (string text) {DialogSetMessage(this.h, text);}
-	method Display (GamePlayer plr, boolean flag) {DialogDisplay(Player(plr), this.h, flag);}
+	method Clear () { DialogClear(this.h); }
+	method SetText (string text) { DialogSetMessage(this.h, text); }
+	method Display (GamePlayer plr, boolean flag) { DialogDisplay(Player(plr), this.h, flag); }
 	method AddButton (string buttonText, integer hotkey, Action action) {
 		button btn= DialogAddButton(this.h, buttonText, hotkey);
 		integer id= GetHandleId(btn);
@@ -31,10 +31,9 @@ public struct Dialog {
 		btn= null;
 	}
 	private static method onInit () {
-		thistype.trig= CreateTrigger();
+		thistype.trig = CreateTrigger();
 		TriggerAddCondition(thistype.trig, function ()->boolean {
-			integer id= GetHandleId(GetClickedButton());
-			Action(Utils.GetInteger(id)).evaluate(Utils.Get(GetClickedDialog()));
+			Action(Utils.Get(GetClickedButton())).evaluate(Utils.Get(GetClickedDialog()));
 			return false;
 		});
 	}
